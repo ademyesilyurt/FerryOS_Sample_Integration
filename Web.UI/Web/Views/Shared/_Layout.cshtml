@@ -1,0 +1,260 @@
+﻿@{
+    string LangCode = Library.Configuration.Lang;
+}
+<html lang="@(LangCode.ToLower())">
+<head>
+    <title>@Html.Raw(ViewBag.Title) - @(Library.Configuration.CompanyName)</title>
+    <meta name="language" id="language" content="@(LangCode)" />
+    <meta http-equiv="asset-Language" content="@(LangCode.ToLower())" />
+    <meta name="robots" content="index, follow" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="icon" href="../assets/images/favicon.png" type="image/x-icon">
+    <script>
+        var system_url = "@(Library.Configuration.SystemUrl)";
+        var company_id =@(Library.Configuration.SystemCompanyID);
+    </script>
+</head>
+<body id="flight-homepage">
+    <div class="loader"></div>
+    <!--======== SEARCH-OVERLAY =========-->
+    <div class="overlay">
+        <a href="javascript:void(0)" id="close-button" class="closebtn">&times;</a>
+        <div class="overlay-content">
+            <div class="form-center">
+                <form>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search..." required />
+                            <span class="input-group-btn"><button type="submit" class="btn"><span><i class="fa fa-search"></i></span></button></span>
+                        </div><!-- end input-group -->
+                    </div><!-- end form-group -->
+                </form>
+            </div><!-- end form-center -->
+        </div><!-- end overlay-content -->
+    </div><!-- end overlay -->
+    <!--============= TOP-BAR ===========-->
+    <div id="top-bar" class="tb-text-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                    <div id="info">
+                        <ul class="list-unstyled list-inline">
+                            <li><span><i class="fa fa-map-marker"></i></span><a style="color:#fff;" href="mailto:@(Library.Configuration.EMail)">@(Library.Configuration.EMail)</a></li>
+                            <li><span><i class="fa fa-phone"></i></span><a style="color:#fff;" href="tel:@(Library.Configuration.Phone.Replace(" ",""))">+@(Library.Configuration.Phone)</a></li>
+                        </ul>
+                    </div><!-- end info -->
+                </div><!-- end columns -->
+                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                    <div id="links">
+                        <ul class="list-unstyled list-inline">
+                            <li><a style="color:white" href="#"><img style="width:31px;" src="../assets/img/Instagram-Icon.png">&nbsp;&nbsp;</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                    <img src="../assets/img/flags/@(LangCode.Replace("/", "").ToLower()).png" style="width:31px;" alt="Logo">&nbsp;&nbsp;@(LangCode.ToUpper())
+                                </a>
+                                <ul class="dropdown-menu" role="menu" style="min-width:0;color:black !important">
+                                    <li><a style="color:black" href="../tr"><img style="width:31px;" src="../assets/img/flags/tr.png">&nbsp;&nbsp;TR</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div><!-- end links -->
+                </div><!-- end columns -->
+            </div><!-- end row -->
+        </div><!-- end container -->
+    </div><!-- end top-bar -->
+
+    <nav class="navbar navbar-default main-navbar navbar-custom navbar-white affix-top" id="mynavbar">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" id="menu-button">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div class="header-search hidden-lg">
+                    <a href="javascript:void(0)" class="search-button"><span><i class="fa fa-search"></i></span></a>
+                </div>
+                <a href="../" class="navbar-brand"><img style="max-height: 48px;" src="~/assets/images/logo.png"></a>
+            </div><!-- end navbar-header -->
+            <div class="collapse navbar-collapse" id="myNavbar1">
+                <ul class="nav navbar-nav navbar-right ">
+                    <li class=" ">
+                        <a href="../../" class="dropdown-toggle" data-toggle="">ANASAYFA<span></span></a>
+                    </li>
+                    <li class=" ">
+                        <a href="../hakkimizda" class="dropdown-toggle" data-toggle="">HAKKIMIZDA<span></span></a>
+                    </li>
+                    <li class=" ">
+                        <a href="../iletisim" class="dropdown-toggle" data-toggle="">İLETİŞİM<span></span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="sidenav-content">
+        <div id="mySidenav" class="sidenav">
+            <p id="web-name">
+                <img style="-webkit-filter: brightness(0) invert(1); filter: brightness(0) invert(1); width: 77%;" src="/Assets/img/logo.png">
+                <br><a style="color:#fff" href="tel:902327127754">902327127754</a>
+            </p>
+            <div id="main-menu">
+                <div class="closebtn">
+                    <button class="btn btn-default" id="closebtn">×</button>
+                </div>
+                <div class="list-group panel">
+                    <a href="../" class="list-group-item active" data-toggle="" data-parent="#main-menu"><span><i class="fa fa-circle link-icon"></i></span>ANASAYFA<span></span></a>
+                    <a href="../" class="list-group-item active" data-toggle="collapse" data-parent="#main-menu"><span><i class="fa fa-circle link-icon"></i></span>FERİBOT BİLETLERİ<span><i class="fa fa-chevron-down arrow"></i></span></a>
+                    <a href="../hakkimizda" class="list-group-item active" data-toggle="" data-parent="#main-menu"><span><i class="fa fa-circle link-icon"></i></span>HAKKIMIZDA<span></span></a>
+                    <a href="../iletisim" class="list-group-item active" data-toggle="" data-parent="#main-menu"><span><i class="fa fa-circle link-icon"></i></span>İLETİŞİM<span></span></a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end navbar -->
+    @RenderBody()
+
+    <section class="banner-padding lightgrey-features" id="best-features">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-md-3">
+                    <div class="b-feature-block">
+                        <p><img alt="sakız adası bileti online" src="../assets/images/bileti_online.webp" style="width: 175px; height: 175px;"></p>
+
+                        <h4><strong>Yunan Adaları Feribot Biletleri</strong></h4>
+
+                        <p>feribot bileti ve diğer tüm Yunan adaları hatlarına uygun fiyata bilet satın alabilirsiniz.</p>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-3">
+                    <div class="b-feature-block">
+                        <p><img alt="deneyim" src="../assets/images/deneyim.webp" style="width: 175px; height: 175px;"></p>
+
+                        <h4><strong>10Yıldan Fazla Deneyim</strong></h4>
+
+                        <p>Feribot hattında 20 yıldan fazla deneyim ile siz değerli misafirlerimize hizmet vermekten mutluluk duyuyoruz&nbsp;</p>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-3">
+                    <div class="b-feature-block">
+                        <p><img alt="" src="../assets/images/nerede.webp" style="width: 175px; height: 175px;"></p>
+
+                        <h4><strong>Yerel Acenteniz</strong></h4>
+
+                        <p>Acente yetkililerimiz devamlı olarak yanınızda veya bir telefon uzaklığında.</p>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-3">
+                    <div class="b-feature-block">
+                        <p><img alt="yanınızdayız" src="../assets/images/yaninizdayiz.webp" style="width: 175px; height: 175px;"></p>
+
+                        <h4><strong>7/24 Yanınızdayız</strong></h4>
+
+                        <p>Feribot biletleri&nbsp;ve turlar için bizimle istediğiniz saatte iletişime geçebilir veya mesaj bırakabilirsiniz.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="ftr-heading-o ftr-heading-mgn-1" id="footer">
+        <!-- end footer-top -->
+        <div class="ftr-bot-black" id="footer-bottom">
+            <style type="text/css">
+                hr.new5 {
+                    border: 1px solid orange;
+                }
+            </style>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6 col-md-3">
+                        <div class="ftr-bot-black">
+                            <h4><span style="color:#A9A9A9;"><span style="font-size:16px;"><strong>Hakkımızda </strong>&nbsp;</span></span>&nbsp;</h4>
+                            <hr class="new5">
+                            <p>Yunanistan feribot biletleri satış ve yerel hizmetler.</p>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-3">
+                        <div class="ftr-bot-black">
+                            <h4><span style="color:#A9A9A9;"><strong><span style="font-size:16px;">Hizmetlerimiz</span></strong></span></h4>
+
+                            <hr class="new5">
+                            <p><a href="#"><span style="color:#A9A9A9;">Samos Adası Bileti</span></a></p>
+                            <p><span style="color:#A9A9A9;">Yunan Adaları Feribot Seferleri</span></p>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-3">
+                        <div class="ftr-bot-black">
+                            <h4><span style="color:#A9A9A9;"><strong><span style="font-size:16px;">İletişim</span></strong></span></h4>
+
+                            <hr class="new5">
+                            <p><span style="color:#A9A9A9;">+90 212 909 33 98</span></p>
+
+
+                            <p><span style="color:#A9A9A9;">info@ferryos.com</span></p>
+
+                            <p><span style="color:#A9A9A9;">Perpa Ticaret Merkezi B Blok Kat 11 No 1557 Şişli – İstanbul</span></p>
+
+                            <p>&nbsp;</p>
+
+                            <p>&nbsp;</p>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-3">
+                        <div class="ftr-bot-black">
+                            <h4><span style="color:#A9A9A9;"><strong><span style="font-size:16px;">Güvenlik ve Kurallar</span></strong></span></h4>
+
+                            <hr class="new5">
+                            <p><a href="../mesafeli-satis-sozlesmesi">​</a><a href="#"><span style="color:#A9A9A9;">Genel Kurallar</span></a></p>
+
+                            <p><a href="#"><span style="color:#A9A9A9;">Satış Sözleşmesi</span></a></p>
+
+                            <p><a href="#"><span style="color:#A9A9A9;">Gizlilik &amp; Güvenlik</span></a></p>
+
+                            <p><span style="color:#A9A9A9;"><img alt="güvenli ödeme" src="../assets/images/kradi_karti_bilet.webp" style="width: 250px; height: 71px; margin-top: 15px; margin-bottom: 15px;"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @Styles.Render("~/assets/bundlecss")
+    @Scripts.Render("~/assets/bundlejs")
+    <!-- Page Scripts Ends -->
+    @RenderSection("scripts", false)
+    <style>
+        h1 {
+            font-size: 25px !important;
+        }
+
+        h2 {
+            font-size: 22px !important;
+        }
+
+        h3 {
+            font-size: 19px !important;
+        }
+
+        h4 {
+            font-size: 17px !important;
+        }
+
+        h5 {
+            font-size: 15px !important;
+        }
+    </style>
+</body>
+</html>

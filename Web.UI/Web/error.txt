@@ -1,0 +1,128 @@
+The controller for path '/assets/img/page/' was not found or does not implement IController.
+The controller for path '/assets/img/page/' was not found or does not implement IController.
+The controller for path '/assets/img/page/' was not found or does not implement IController.
+The controller for path '/assets/img/page/' was not found or does not implement IController.
+D:\Projects\FeribotBileti\FeribotBileti\Web.UI\Web\Views\FerrySearch\Index.cshtml(199): error CS1026: ) expected
+D:\Projects\FeribotBileti\FeribotBileti\Web.UI\Web\Views\Home\Index.cshtml(85): error CS0117: 'Token' does not contain a definition for 'AccessToken2'
+The controller for path '/tr/feribot-bileti-yolcu-bilgileri' was not found or does not implement IController.
+The controller for path '/tr/feribot-bileti-yolcu-bilgileri' was not found or does not implement IController.
+The controller for path '/en)' was not found or does not implement IController.
+The controller for path '/fgsdfg' was not found or does not implement IController.
+The controller for path '/tr/bodrum-kos-feribot-bileti' was not found or does not implement IController.
+Error executing child request for handler 'System.Web.Mvc.HttpHandlerUtil+ServerExecuteHttpHandlerAsyncWrapper'.
+D:\Projects\TLS\Web.UI\Web\Views\Shared\_Layout.cshtml(71): error CS0019: Operator '==' cannot be applied to operands of type 'bool' and 'string'
+D:\Projects\TLS\Web.UI\Web\Views\Shared\_Layout.cshtml(71): error CS0019: Operator '==' cannot be applied to operands of type 'bool' and 'string'
+D:\Projects\TLS\Web.UI\Web\Views\Shared\_Layout.cshtml(21): error CS1525: Invalid expression term '&&'
+D:\Projects\TLS\Web.UI\Web\Views\Shared\_Layout.cshtml(21): error CS1525: Invalid expression term '&&'
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(59): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(40): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(34): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(11): error CS0841: Cannot use local variable 'pagelang' before it is declared
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+D:\Projects\TLS\Web.UI\Web\Views\FerryPrice\Index.cshtml(56): error CS0128: A local variable or function named 'LangCode' is already defined in this scope
+Error executing child request for handler 'System.Web.Mvc.HttpHandlerUtil+ServerExecuteHttpHandlerAsyncWrapper'.
+A potentially dangerous Request.Path value was detected from the client (:).
+D:\Projects\TLS\Web.UI\Web\Views\Shared\_Layout.cshtml(152): error CS0103: The name 'item' does not exist in the current context
+Unexpected "{" after "@" character. Once inside the body of a code block (@if {}, @{}, etc.) you do not need to use "@{" to switch to code.
+
+D:\Projects\TILOS\Web.UI\Web\Views\Home\Index.cshtml(8): error CS0234: The type or namespace name 'WebService' does not exist in the namespace 'Library' (are you missing an assembly reference?)
+D:\Projects\TILOS\Web.UI\Web\Views\Home\Index.cshtml(9): error CS0103: The name 'HttpMethod' does not exist in the current context
+D:\Projects\TILOS\Web.UI\Web\Views\Home\Index.cshtml(9): error CS0103: The name 'HttpMethod' does not exist in the current context
+D:\Projects\TILOS\Web.UI\Web\Views\FerrySalesCustomer\Index.cshtml(61): error CS1061: 'IEnumerable<PageLanguage>' does not contain a definition for 'getLangValue' and no accessible extension method 'getLangValue' accepting a first argument of type 'IEnumerable<PageLanguage>' could be found (are you missing a using directive or an assembly reference?)
+D:\Projects\TILOS\Web.UI\Web\Views\FerrySalesCustomer\Index.cshtml(61): error CS1061: 'IEnumerable<PageLanguage>' does not contain a definition for 'getLangValue' and no accessible extension method 'getLangValue' accepting a first argument of type 'IEnumerable<PageLanguage>' could be found (are you missing a using directive or an assembly reference?)
+D:\Projects\TILOS\Web.UI\Web\Views\FerrySalesCustomer\Index.cshtml(61): error CS1061: 'IEnumerable<PageLanguage>' does not contain a definition for 'getLangValue' and no accessible extension method 'getLangValue' accepting a first argument of type 'IEnumerable<PageLanguage>' could be found (are you missing a using directive or an assembly reference?)
+D:\Projects\TILOS\Web.UI\Web\Views\FerrySalesCustomer\Index.cshtml(61): error CS1061: 'IEnumerable<PageLanguage>' does not contain a definition for 'getLangValue' and no accessible extension method 'getLangValue' accepting a first argument of type 'IEnumerable<PageLanguage>' could be found (are you missing a using directive or an assembly reference?)
+D:\Projects\TILOS\Web.UI\Web\Views\FerrySalesCustomer\Index.cshtml(11): error CS0103: The name 'wSystem' does not exist in the current context
+D:\Projects\TILOS\Web.UI\Web\Views\FerrySalesCustomer\Index.cshtml(11): error CS0103: The name 'wSystem' does not exist in the current context
+D:\Projects\TILOS\Web.UI\Web\Views\FerrySalesCustomer\Index.cshtml(11): error CS0103: The name 'wSystem' does not exist in the current context
+D:\Projects\TILOS\Web.UI\Web\Views\FerrySalesCustomer\Index.cshtml(11): error CS0103: The name 'wSystem' does not exist in the current context
+D:\Projects\TILOS\Web.UI\Web\Views\Payment\Index.cshtml(241): error CS1061: 'SalesBankInstallmentList' does not contain a definition for 'ic' and no accessible extension method 'ic' accepting a first argument of type 'SalesBankInstallmentList' could be found (are you missing a using directive or an assembly reference?)
+D:\Projects\TILOS\Web.UI\Web\Views\Voucher\Index.cshtml(22): error CS1061: 'Root' does not contain a definition for 'step' and no accessible extension method 'step' accepting a first argument of type 'Root' could be found (are you missing a using directive or an assembly reference?)
+D:\Projects\TILOS\Web.UI\Web\Views\Voucher\Index.cshtml(22): error CS1061: 'Root' does not contain a definition for 'step' and no accessible extension method 'step' accepting a first argument of type 'Root' could be found (are you missing a using directive or an assembly reference?)
+D:\Projects\TILOS\Web.UI\Web\Views\Voucher\Index.cshtml(22): error CS1061: 'Root' does not contain a definition for 'step' and no accessible extension method 'step' accepting a first argument of type 'Root' could be found (are you missing a using directive or an assembly reference?)
+D:\Projects\TILOS\Web.UI\Web\Views\Voucher\Index.cshtml(22): error CS1061: 'Root' does not contain a definition for 'step' and no accessible extension method 'step' accepting a first argument of type 'Root' could be found (are you missing a using directive or an assembly reference?)
+D:\Projects\TILOS\Web.UI\Web\Views\Voucher\Index.cshtml(22): error CS1061: 'Root' does not contain a definition for 'step' and no accessible extension method 'step' accepting a first argument of type 'Root' could be found (are you missing a using directive or an assembly reference?)
+D:\Projects\TILOS\Web.UI\Web\Views\TimeTable\Index.cshtml(92): error CS1061: 'Root' does not contain a definition for 'Count' and no accessible extension method 'Count' accepting a first argument of type 'Root' could be found (are you missing a using directive or an assembly reference?)
+D:\Projects\TILOS\Web.UI\Web\Views\TimeTable\Index.cshtml(73): error CS1061: 'Root' does not contain a definition for 'Where' and no accessible extension method 'Where' accepting a first argument of type 'Root' could be found (are you missing a using directive or an assembly reference?)
+The explicit expression block is missing a closing ")" character.  Make sure you have a matching ")" character for all the "(" characters within this block, and that none of the ")" characters are being interpreted as markup.
+
+Error executing child request for handler 'System.Web.Mvc.HttpHandlerUtil+ServerExecuteHttpHandlerAsyncWrapper'.
+Error executing child request for handler 'System.Web.Mvc.HttpHandlerUtil+ServerExecuteHttpHandlerAsyncWrapper'.
+Error executing child request for handler 'System.Web.Mvc.HttpHandlerUtil+ServerExecuteHttpHandlerAsyncWrapper'.
+Error executing child request for handler 'System.Web.Mvc.HttpHandlerUtil+ServerExecuteHttpHandlerAsyncWrapper'.
+Error executing child request for handler 'System.Web.Mvc.HttpHandlerUtil+ServerExecuteHttpHandlerAsyncWrapper'.
+Error executing child request for handler 'System.Web.Mvc.HttpHandlerUtil+ServerExecuteHttpHandlerAsyncWrapper'.
+D:\Projects\feribot.bileti.satis\Web.UI\Web\Views\Invoice\Index.cshtml(358): error CS0019: Operator '||' cannot be applied to operands of type 'int' and 'int'
+Encountered end tag "div" with no matching start tag.  Are your start/end tags properly balanced?
+
+D:\Projects\feribot.bileti.satis\Web.UI\Web\Views\Payment\Index.cshtml(306): error CS1061: 'Result' does not contain a definition for 'currency' and no accessible extension method 'currency' accepting a first argument of type 'Result' could be found (are you missing a using directive or an assembly reference?)
+D:\Projects\feribot.bileti.satis\Web.UI\Web\Views\Payment\Index.cshtml(306): error CS1061: 'Result' does not contain a definition for 'currency' and no accessible extension method 'currency' accepting a first argument of type 'Result' could be found (are you missing a using directive or an assembly reference?)
+D:\Projects\feribot.bileti.satis\Web.UI\Web\Views\Payment\Index.cshtml(308): error CS0019: Operator '||' cannot be applied to operands of type 'int' and 'int'
+D:\Projects\feribot.bileti.satis\Web.UI\Web\Views\TimeTable\Index.cshtml(16): error CS0019: Operator '==' cannot be applied to operands of type 'int' and 'DbType'
+D:\Projects\feribot.bileti.satis\Web.UI\Web\Views\TimeTable\Index.cshtml(16): error CS0019: Operator '==' cannot be applied to operands of type 'int' and 'DbType'
+Encountered end tag "div" with no matching start tag.  Are your start/end tags properly balanced?
+
+The explicit expression block is missing a closing ")" character.  Make sure you have a matching ")" character for all the "(" characters within this block, and that none of the ")" characters are being interpreted as markup.
+
+D:\Projects\feribot.bileti.satis\Web.UI\Web\Views\ExtraServiceDetail\Index.cshtml(34): error CS1061: 'Picture' does not contain a definition for 'picture' and no accessible extension method 'picture' accepting a first argument of type 'Picture' could be found (are you missing a using directive or an assembly reference?)
+The controller for path '/tr/genel-kurallar' was not found or does not implement IController.
+D:\Projects\feribot.bileti.satis\Web.UI\Web\Views\Invoice\Index.cshtml(246): error CS0103: The name 'item' does not exist in the current context
+D:\Projects\feribot.bileti.satis\Web.UI\Web\Views\Invoice\Index.cshtml(246): error CS0103: The name 'item' does not exist in the current context
+The controller for path '/sdfsfs' was not found or does not implement IController.
+The controller for path '/sdfsfs' was not found or does not implement IController.
+The controller for path '/asdasdsad' was not found or does not implement IController.
+The controller for path '/asdasdsad' was not found or does not implement IController.
+The controller for path '/dfgsdfsg' was not found or does not implement IController.
+The controller for path '/dfgsdfsg' was not found or does not implement IController.
+The controller for path '/dsfgsdfs' was not found or does not implement IController.
+The controller for path '/sdfsgdfs' was not found or does not implement IController.
+The controller for path '/dfgfgd' was not found or does not implement IController.
+The controller for path '/dfgfgd' was not found or does not implement IController.
+The controller for path '/dfgfgd' was not found or does not implement IController.
+The controller for path '/dfgfgd' was not found or does not implement IController.
+The controller for path '/dfgfgd' was not found or does not implement IController.
+The controller for path '/dfgfgd' was not found or does not implement IController.
+The controller for path '/dfgfgd' was not found or does not implement IController.
+The controller for path '/dfgfgd' was not found or does not implement IController.
+The controller for path '/ewrw' was not found or does not implement IController.
+The controller for path '/rsdfgsds' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/InternalServerError' was not found or does not implement IController.
+The controller for path '/tr' was not found or does not implement IController.

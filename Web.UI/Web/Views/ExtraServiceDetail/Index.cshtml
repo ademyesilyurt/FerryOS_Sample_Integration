@@ -1,0 +1,267 @@
+﻿@model Entities.Response.ExtraService.ExtraServiceGet.Result
+@{
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+    string LangCode = Configuration.Lang;
+    int LangID = Library.Data.Language.Language.SelectLanguageAll().Where(P => P.Code == LangCode).FirstOrDefault().ID;
+
+    var currency = new WebService.RestApi().Rest<Entities.Response.Common.Root>(null, "api/common/currency?langCode=" + LangCode, "Get");
+    decimal eurokur = currency.result.Where(P => P.typeID == 2).FirstOrDefault().value;
+
+    IEnumerable<Library.Domain.PageLanguage.PageLanguage>
+        pagelang = Library.Data.PageLanguage.PageLanguage.PageLanguages(37, LangID);
+
+}
+
+<script>
+     var rezervasyonutamamlalink = '../@Html.Raw(Library.Data.Language.Language.GetName(pagelang,"REZERVASYONU_TAMAMLA"))?Voucher=';
+
+     var rezervasyonutamamla = '@Html.Raw(Library.Data.Language.Language.GetName(pagelang,"REZERVASYONU_TAMAMLA"))';
+     var alisverisedevamet='@Html.Raw(Library.Data.Language.Language.GetName(pagelang,"ALISVERISE_DEVAM_ET"))';
+    var sepeteeklenmistir = '@Html.Raw(Library.Data.Language.Language.GetName(pagelang,"SEPETE_EKLENMISTIR_POPUP_YAZI"))';
+    var SATIN_ALMA_YONLENDIRME_UYARI = '@Html.Raw(Library.Data.Language.Language.GetName(pagelang, "SATIN_ALMA_YONLENDIRME_UYARI"))';
+    var SATIN_ALMA_YONLENDIRME_URL = '@Html.Raw(Library.Data.Language.Language.GetUrl(pagelang, "SATIN_ALMA_YONLENDIRME_UYARI"))';
+</script>
+<section class="innerpage-wrapper">
+    <div id="cruise-details" class="innerpage-section-padding">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 content-side">
+
+                    <div class="detail-slider">
+                        <div class="feature-slider">
+                            @{
+                                foreach (var item in Model.pictures)
+                                {
+                                    <div><img src="@(Library.Configuration.SystemUrl + "/storage/" + Library.Configuration.SystemCompanyID + "/extraservice/" + Model.id + "/large/" + item.fileName)" class="img-responsive" alt="@(item.name)" /></div>
+                                }
+                            }
+
+
+                        </div><!-- end feature-slider -->
+
+                        <div class="feature-slider-nav">
+                            @{
+                                foreach (var item in Model.pictures)
+                                {
+                                    <div><img src="@(Library.Configuration.SystemUrl + "/storage/" + Library.Configuration.SystemCompanyID + "/extraservice/" + Model.id + "/medium/" + item.fileName)" class="img-responsive" alt="@(item.name)" /></div>
+                                }
+                            }
+
+
+                        </div><!-- end feature-slider-nav -->
+
+                        <ul class="list-unstyled features tour-features">
+                            <li><div class="f-icon"><i class="fa fa-wheelchair"></i></div><div class="f-text"><p class="f-heading">Seats</p><p class="f-data">25</p></div></li>
+                            <li><div class="f-icon"><i class="fa fa-calendar"></i></div><div class="f-text"><p class="f-heading">Duration</p><p class="f-data">7 DAYS</p></div></li>
+                            <li><div class="f-icon"><i class="fa fa-clock-o"></i></div><div class="f-text"><p class="f-heading">Discount</p><p class="f-data">10% OFF</p></div></li>
+                        </ul>
+                    </div><!-- end detail-slider -->
+                    <div class="col-md-12">
+                        <hr />
+                        <h2><b> @Library.Data.PageLanguage.PageLanguage.GetName(pagelang, "REZERVASYON")</b></h2>
+                        <hr />
+                        <div class=" searchbar" style=" margin : 12px;">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>@Library.Data.PageLanguage.PageLanguage.GetName(pagelang, "HIZMET_TARIHI")</label><input id="ServiceDate" class="form-control txtdate" txtdate style="border:1px solid #dcdcdc; width:100%" value="@(DateTime.Today.ToString("dd.MM.yyyy"))" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="AdultQuantity">@Library.Data.PageLanguage.PageLanguage.GetName(pagelang, "YETISKIN")</label>
+                                        <select class="form-control" id="AdultQuantity">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="ChildQuantity">@Library.Data.PageLanguage.PageLanguage.GetName(pagelang, "COCUK")</label>
+                                        <select class="form-control" id="ChildQuantity">
+                                            <option value="0">Yok</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 childage" style="display:none" id="childage1">
+                                    <div class="form-group">
+                                        <label>1. @Library.Data.PageLanguage.PageLanguage.GetName(pagelang, "COCUK_YASI")</label>
+                                        <input type="text" style="border: 1px solid #dcdcdc;width: 100%;" class="txtdate form-control" id="childage11">
+                                    </div>
+                                </div>
+                                <div class="col-md-2 childage" style="display:none" id="childage2">
+                                    <div class="form-group">
+                                        <label>2. @Library.Data.PageLanguage.PageLanguage.GetName(pagelang, "COCUK_YASI")</label>
+
+                                        <input type="text" style="border: 1px solid #dcdcdc;width: 100%;" class="txtdate form-control" id="childage22">
+                                    </div>
+                                </div>
+                                <div class="col-md-2 childage" style="display:none" id="childage3">
+                                    <div class="form-group">
+                                        <label>3. @Library.Data.PageLanguage.PageLanguage.GetName(pagelang, "COCUK_YASI")</label>
+                                        <input type="text" style="border: 1px solid #dcdcdc; width: 100%;" class="txtdate form-control" id="childage33">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2"><br /><button onclick="Calculate(@Model.id)" class="btn btn-block btn-orange">@Library.Data.PageLanguage.PageLanguage.GetName(pagelang, "ARA")</button></div>
+
+                                <div class="col-md-12">
+                                    <hr />
+                                </div>
+
+
+                            </div>
+                            <div class="searchresult row">
+                                <div class="">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-tabs">
+                        <ul class="nav nav-tabs nav-justified">
+                            <li class="active"><a href="#cruise-information" data-toggle="tab">@(Library.Data.PageLanguage.PageLanguage.GetName(pagelang, "DETAYLAR"))</a></li>
+                            <li><a href="#crs-features" data-toggle="tab">@(Library.Data.PageLanguage.PageLanguage.GetName(pagelang, "FIYATLAR"))</a></li>
+
+                        </ul>
+
+                        <div class="tab-content">
+
+                            <div id="cruise-information" class="tab-pane in active">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12 tab-img">
+                                        @(Html.Raw(Model.content.Where(p => p.contentCode == "WEB_CONTENT").First().content))
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div id="crs-features" class="tab-pane">
+                                <div class="row">
+
+
+                                    <div class="col-sm-12 col-md-12 tab-text">
+
+                                        <p>
+                                            <table class="table">
+                                                @{
+                                                    foreach (var item in Model.prices)
+                                                    {
+                                                        <tr>
+                                                            <td>@(item.customerTypeName)</td>
+                                                            <td>@(item.startAge.ToString()) - @(item.endAge.ToString()) @(Library.Data.PageLanguage.PageLanguage.GetName(pagelang, "YAS"))</td>
+                                                            <td>@(item.amount) @(item.currencyTypeSymbol)</td>
+                                                        </tr>
+                                                    }
+
+                                                }
+                                            </table>
+                                        </p>
+                                    </div><!-- end columns -->
+                                </div><!-- end row -->
+                            </div><!-- end crs-features -->
+
+
+                        </div><!-- end tab-content -->
+                    </div><!-- end detail-tabs -->
+
+                    <div class="available-blocks" id="available-tours">
+                        <h2>@Html.Raw(Library.Data.Language.Language.GetName(pagelang, "DIGER_TURLARIMIZ"))</h2>
+                        @{ var extraservice = new WebService.RestApi().Rest<Entities.Response.ExtraService.Search.Root>(new { birthDate = new List<DateTime>(), pageIndex = 1, regions = new List<Entities.Parameter.ExtraServices.Search.Region>(), citys = new List<Entities.Parameter.ExtraServices.Search.City>(), pageSize = 9999, serviceStartDate = DateTime.Today, langCode = LangCode, productGroupCode = Library.Configuration.EXTRA_SERVICE_ALL }, "api/extraservice/search", "Post");
+                            foreach (var item in extraservice.result)
+                            {
+                                <div class="list-block main-block crs-list-block">
+                                    <div class="list-content">
+                                        <div class="main-img list-img crs-list-img">
+                                            <a href="@(Html.Raw(Model.url))">
+                                                <img src="@(Library.Configuration.SystemUrl + "/storage/" + Library.Configuration.SystemCompanyID + "/extraservice/" + Model.id + "/medium/" + Model.picture)" class="img-responsive" alt="cruise-img" />
+                                            </a>
+                                            <div class="main-mask">
+                                                <ul class="list-unstyled list-inline offer-price-1">
+                                                    <li class="price">@(Html.Raw(Model.amount)) @(Html.Raw(Model.currencyTypeSymbol))<span class="divider">|</span><span class="pkg">@(Html.Raw(Model.tags))</span></li>
+                                                    <li class="rating">
+                                                        <span><i class="fa fa-star orange"></i></span>
+                                                        <span><i class="fa fa-star orange"></i></span>
+                                                        <span><i class="fa fa-star orange"></i></span>
+                                                        <span><i class="fa fa-star orange"></i></span>
+                                                        <span><i class="fa fa-star orange"></i></span>
+                                                    </li>
+                                                </ul>
+                                            </div><!-- end main-mask -->
+                                        </div><!-- end crs-list-img -->
+
+                                        <div class="list-info crs-list-info">
+                                            <h3 class="block-title"><a href="@(Html.Raw(Model.url))">@(item.name)</a></h3>
+                                            <p class="block-minor">@(Html.Raw(Model.regions))</p>
+                                            <p>@(Html.Raw(Model.webDescription))</p>
+                                            <a href="@(Html.Raw(Model.url))" class="btn btn-orange btn-lg">@Html.Raw(Library.Data.Language.Language.GetName(pagelang, "INCELE"))</a>
+                                        </div><!-- end crs-list-info -->
+                                    </div><!-- end list-content -->
+                                </div><!-- end crs-list-block -->
+                            } }
+                    </div><!-- end available-tours -->
+
+
+
+                </div><!-- end columns -->
+
+                <div class="col-xs-12 col-sm-12 col-md-3 side-bar right-side-bar">
+
+                    <div class="side-bar-block booking-form-block">
+                        <h2 class="selected-price">@(Model.prices.Where(p=>p.customerTypeID==1).First().amount) @(Model.prices.Where(p=>p.customerTypeID==1).First().currencyTypeSymbol)<span>@(Library.Data.PageLanguage.PageLanguage.GetName(pagelang, "BASLAYAN_FIYATLARLA"))</span></h2>
+
+                        <div class="booking-form">
+                            <h3>@(Model.name)</h3>
+                            <p>@(Model.webDescription)</p>
+
+                        </div><!-- end booking-form -->
+                    </div><!-- end side-bar-block -->
+
+                    <div class="row">
+
+
+                        <div class="col-xs-12 col-sm-6 col-md-12">
+                            <div class="side-bar-block support-block">
+                                <h3>@(Library.Data.PageLanguage.PageLanguage.GetName(pagelang, "CAGRI_MERKEZI"))</h3>
+                                <p>
+                                    @(Library.Data.PageLanguage.PageLanguage.GetName(pagelang, "CAGRI_MERKEZI_ACIKLAMA"))
+                                </p>
+                                <div class="support-contact">
+                                    <span><i class="fa fa-phone"></i></span>
+                                    <p>@(Html.Raw(Library.Configuration.Phone1))</p>
+                                </div><!-- end support-contact -->
+                            </div><!-- end side-bar-block -->
+                        </div><!-- end columns -->
+
+                    </div><!-- end row -->
+                </div><!-- end columns -->
+
+            </div><!-- end row -->
+        </div><!-- end container -->
+    </div><!-- end cruise-detail -->
+</section>
+
+@section scripts {
+    <!-- Page Scripts Starts -->
+
+    <script src="assets/js/slick.min.js"></script>
+    <script src="assets/js/custom-navigation.js"></script>
+    <script src="assets/js/custom-date-picker.js"></script>
+    <script src="assets/js/custom-slick.js"></script>
+    <!-- Page Scripts Ends -->
+    <script src="~/Assets/js/View/ExtraSewrviceDetail.js"></script>
+
+}

@@ -1,0 +1,221 @@
+﻿@model Library.Domain.RouteTable.RouteTable
+@{
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+
+    string LangCode = Configuration.Lang;
+    int LangID = Library.Data.Language.Language.SelectLanguageAll().Where(P => P.Code == LangCode).FirstOrDefault().ID;
+    Library.Domain.User.Basket basket = new Library.Domain.User.Basket();
+
+    string url = Request.Url.Segments.Last();
+    IEnumerable<Library.Domain.PageLanguage.PageLanguage> pagelang = Library.Data.PageLanguage.PageLanguage.PageLanguages(12, LangID);
+    int dregion = Convert.ToInt32(Request.Form["DepartureRegionID"] == null ? Model.ProductGroupCode.Split(',')[0] : Request.Form["DepartureRegionID"]);
+    int aregion = Convert.ToInt32(Request.Form["ArrivalRegionID"] == null ? Model.ProductGroupCode.Split(',')[1] : Request.Form["ArrivalRegionID"]);
+    LangCode = (LangCode == "TR" ? "" : "/") + LangCode;
+}
+ 
+@{
+    <script>
+        var post;
+        var DOGUM_TARIHI='@Html.Raw(pagelang.Where(P => P.Code == "DOGUM_TARIHI").FirstOrDefault().Name)';
+       var SECINIZ = '@Html.Raw(pagelang.Where(P => P.Code == "SECINIZ").FirstOrDefault().Name)';
+        var SeyahatSuresi = '@pagelang.Where(P => P.Code == "SEYAHAT_SURESI").FirstOrDefault().Name';
+        var dk = '@pagelang.Where(P => P.Code == "DK").FirstOrDefault().Name';
+       var uygun_sefer_seciniz = '@pagelang.Where(P => P.Code == "UYGUN_SEFER_SECINIZ").FirstOrDefault().Name';
+       var kalkis_limani = '@pagelang.Where(P => P.Code == "KALKIS_LIMANI").FirstOrDefault().Name';
+       var varis_limani = '@pagelang.Where(P => P.Code == "VARIS_LIMANI").FirstOrDefault().Name';
+       var RouteType = '@(Request.Form["RouteType"])';
+       var DepartureRegionID = '@(Request.Form["DepartureRegionID"] == null ? Model.ProductGroupCode.Split(',')[0] : Request.Form["DepartureRegionID"])';
+       var ArrivalRegionID = '@(Request.Form["ArrivalRegionID"] == null ? Model.ProductGroupCode.Split(',')[1] : Request.Form["ArrivalRegionID"])';
+       var DepartureDate = '@(Request.Form["DepartureDate"])';
+       var ReturnDate = '@(Request.Form["ReturnDate"])';
+       var AdultQuantity = '@(Request.Form["AdultQuantity"])';
+       var ChildQuantity = '@(Request.Form["ChildQuantity"])';
+       var InfantQuantity = '@(Request.Form["InfantQuantity"])';
+        var VehicleQuantity = '@(Request.Form["VehicleQuantity"])';
+
+        var YOLCU_TIPI = '@Html.Raw(pagelang.Where(P => P.Code == "YOLCU_TIPI").FirstOrDefault().Name)';
+        var TEK_YON = '@Html.Raw(pagelang.Where(P => P.Code == "TEK_YON").FirstOrDefault().Name)';
+        var ARAC_FIYATLARI = '@Html.Raw(pagelang.Where(P => P.Code == "ARAC_FIYATLARI").FirstOrDefault().Name)';
+        var AYNI_GUN_GIDIS_DONUS = '@Html.Raw(pagelang.Where(P => P.Code == "AYNI_GUN_GIDIS_DONUS").FirstOrDefault().Name)';
+        var FARKLI_GUN_GIDIS_DONUS = '@Html.Raw(pagelang.Where(P => P.Code == "FARKLI_GUN_GIDIS_DONUS").FirstOrDefault().Name)';
+        var DONUS_ACIK='@Html.Raw(pagelang.Where(P => P.Code == "DONUS_ACIK").FirstOrDefault().Name)';
+
+    </script>
+}
+<div class="modal fade" id="vehicleprices" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">@Html.Raw(pagelang.Where(P => P.Code == "KAPAT").FirstOrDefault().Name)</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="main_contant">
+    <div class="container">
+        <div class="row customers">
+
+            <div class="col-sm-12">
+                <div style="  margin-bottom:12px; margin-top:12px;">
+                     
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="font-size:12px;">
+
+
+                        @{
+                            
+        
+                             BackOffice.Api.Integration.Data.Booking.Ticket wp = new BackOffice.Api.Integration.Data.Booking.Ticket();
+
+
+                            IList<BackOffice.Api.Integration.Entities.Ticket.FerryRoutePrice.Ferry> ferryprices = (IList<BackOffice.Api.Integration.Entities.Ticket.FerryRoutePrice.Ferry>)wp.Prices(Library.Domain.Token.AccessToken, new BackOffice.Api.Integration.Entities.Parameter.Ferry.PricesList() { LangCode = LangCode, RouteZoneID = Convert.ToInt32(ViewBag.RouteZoneID) }).Result;
+                            int xx = 0;
+                            foreach (var item in ferryprices)
+                            {
+
+
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="heading@(item.FerryID)">
+                                        <div class="panel-title" itemtype="http://schema.org/TouristTrip" itemscope>
+                                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse@(item.FerryID)" aria-expanded="false" aria-controls="collapse@(item.FerryID)">
+
+                                                <span itemprop="description" style="font-weight:700;"> @(Html.Raw(item.CompanyName)) - @(Html.Raw(item.FerryName))</span>
+                                                <br />
+                                                <span style="font-weight:100">(@(Html.Raw(item.Route.FirstOrDefault().DepartureRegionName)), @(Html.Raw(item.Route.FirstOrDefault().ArrivalRegionName))</span>
+                                                <meta itemprop="name" content="(@(Html.Raw(item.Route.FirstOrDefault().DepartureRegionName)) , @(Html.Raw(item.Route.FirstOrDefault().ArrivalRegionName))">
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div id="collapse@(item.FerryID)" class="panel-collapse collapse @(xx>0?"":"in")" role="tabpanel" aria-labelledby="heading@(item.FerryID)">
+                                        <div class="panel-body">
+
+                                            @{ foreach (var item2 in item.Route.Where(P => P.Price.Passenger != null))
+                                                {
+
+
+
+                                                                                        <script type="application/ld+json">
+                                                    {
+                                                    "@@context": "https://schema.org/",
+                                                    "@@type": "Product",
+                                                    "name": "@(Html.Raw(ViewBag.Title))",
+                                                    "image": "@(Library.Configuration.SystemUrl)/storage/@(Library.Configuration.SystemCompanyID)/ferry/@(item.FerryID)/medium/@(item.Picture)",
+                                                    "mpn":"@(Html.Raw(Library.Utility.EnglishUpperCase(item2.DepartureRegionName + item2.ArrivalRegionName).Replace(" ", "").Replace("-", "")))",
+                                                    "description": "@Html.Raw(ViewBag.Descriptions)",
+                                                    "brand": "@Html.Raw(item.CompanyName)",
+                                                    "sku": "@item2.RouteID",
+                                                    "offers": {
+                                                    "@@type": "Offer",
+                                                    "url": "https://www.@(Library.Configuration.BaseDomain)/@(LangCode.ToLower())/@ViewBag.CanonicalUrl",
+                                                    "priceCurrency": "EUR",
+                                                    "price": "@String.Format("{0:00.0}", item2.Price.Passenger.FirstOrDefault().OneWaySalesAmount.ToString().Replace(",", "."))",
+                                                    "priceValidUntil": "@(DateTime.Today.AddYears(1).ToString("yyyy-MM-dd"))",
+                                                    "availability": "https://schema.org/InStock"
+                                                    },
+                                                    "aggregateRating": {
+                                                    "@@type": "AggregateRating",
+                                                    "ratingValue": "5",
+                                                    "bestRating": "5",
+                                                    "worstRating": "1",
+                                                    "ratingCount": "5"
+                                                    }
+                                                    }
+                                                                                        </script>
+
+                                                    <table class="table" style="width:100%;">
+                                                        <thead>
+                                                            <tr>
+                                                                <td colspan="5">@item2.DepartureRegionName > @item2.ArrivalRegionName</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>@Html.Raw(pagelang.Where(P => P.Code == "YOLCU_TIPI").FirstOrDefault().Name)</td>
+                                                                <td>@Html.Raw(pagelang.Where(P => P.Code == "TEK_YON").FirstOrDefault().Name)</td>
+                                                                <td>@Html.Raw(pagelang.Where(P => P.Code == "DONUS_ACIK").FirstOrDefault().Name)</td>
+                                                                <td>@Html.Raw(pagelang.Where(P => P.Code == "AYNI_GUN_GIDIS_DONUS").FirstOrDefault().Name)</td>
+                                                                <td>@Html.Raw(pagelang.Where(P => P.Code == "FARKLI_GUN_GIDIS_DONUS").FirstOrDefault().Name)</td>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @{
+                                                                foreach (var item3 in item2.Price.Passenger)
+                                                                {
+                                                                    if (item3.PassengerTypeID != 4)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@item3.PassengerTypeName</td>
+                                                                            <td>@item3.OneWaySalesAmount @item3.CurrencyTypeSymbol</td>
+                                                                            <td>@item3.OpenReturnSalesAmount @item3.CurrencyTypeSymbol</td>
+                                                                            <td>@item3.ReturnSameDaySalesAmount @item3.CurrencyTypeSymbol</td>
+                                                                            <td>@item3.ReturnDifferentDaySalesAmount @item3.CurrencyTypeSymbol</td>
+                                                                        </tr>
+                                                                    }
+                                                                }
+                                                            }
+                                                            <tr>
+                                                                @{
+                                                                    if (!item2.AvailableVehicle)
+                                                                    {
+                                                                        <td colspan="5" style="text-align:left">@Html.Raw(pagelang.Where(P => P.Code == "ARAC_MUSAITLIGI_BULUNMAMAKTADIR").FirstOrDefault().Name)</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td colspan="5" style="text-align:left"><button type="button" class="btn btn-light" onclick="GetVehiclePrice(@item.FerryID,@(ViewBag.RouteZoneID),@item2.RouteID)"><i class="fa fa-car" aria-hidden="true"></i>@Html.Raw(pagelang.Where(P => P.Code == "ARAC_FIYATLARI_ICIN_TIKLAYINIZ").FirstOrDefault().Name)</button></td>
+                                                                    }
+                                                                }
+
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+
+                                                }
+                                                xx += 1;
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            }
+                        }
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+
+
+
+    <script src="~/assets/js/View/FerrySearch.js?ver=15"></script>
+    <script src="~/assets/js/View/Common.js"></script>
+    <script src="~/assets/js/View/Home.js"></script>
+
+    @{
+        if (IsPost)
+        {
+            <script>
+                $('html, body').animate({
+                    scrollTop: $("#" + $("#ReturnDate").attr("id")).offset().top
+                }, 500, 'linear');
+            </script>
+        }
+
+    }
+}

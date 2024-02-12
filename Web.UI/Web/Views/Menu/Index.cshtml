@@ -1,0 +1,95 @@
+﻿@model IList<Library.Domain.Menu.Menu>
+@{
+    string LangCode = Configuration.Lang.ToLower();
+}
+<nav class="navbar navbar-default main-navbar navbar-custom navbar-white" id="mynavbar">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" id="menu-button">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <div class="header-search hidden-lg">
+                <a href="javascript:void(0)" class="search-button"><span><i class="fa fa-search"></i></span></a>
+            </div>
+            <a href="../@(LangCode=="tr"?"":LangCode)" class="navbar-brand"><img style="max-height: 48px;" src="~/Assets/img/logo.png" /></a>
+        </div><!-- end navbar-header -->
+        <div class="collapse navbar-collapse" id="myNavbar1">
+            <ul class="nav navbar-nav navbar-right ">
+                @{
+                    if (Model != null)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <li class="@(item.SubMenu != null ? "dropdown" : "") @(".."+Request.Url.AbsolutePath.ToLower()==(item.Url==null?"": item.Url.ToLower().Replace("/tr/","/"))?"active":"")">
+                                <a href="@(item.SubMenu != null? "#"+item.ID.ToString(): item.Url==null?"": item.Url.ToLower().Replace("/tr/","/"))" class="dropdown-toggle" data-toggle="@(item.SubMenu != null? "dropdown":"")">@Html.Raw(item.Name == null ? "" : item.Name.ToUpper())<span>@(Html.Raw(item.SubMenu != null ?"<i class='fa fa-angle-down'></i>" :""))</span></a>
+                                @{if (item.SubMenu != null)
+                                    {
+                                        <ul class="dropdown-menu">
+                                            @{
+                                                if (item.SubMenu != null)
+                                                {
+                                                    foreach (var itemSubMenu in item.SubMenu)
+                                                    {
+                                                        <li>
+                                                            @{ 
+                                                                if (!string.IsNullOrEmpty(itemSubMenu.Url) & !string.IsNullOrEmpty(itemSubMenu.Name))
+                                                                {
+                                                                    <a href="../@(LangCode.ToLower()==Library.Configuration.DefaultLanguage.Code.ToLower() ? (itemSubMenu.Url.Replace("/"+LangCode,"")):itemSubMenu.Url.ToLower())">@itemSubMenu.Name</a>
+                                                                }
+                                                            }
+
+                                                        </li>
+                                                    }
+                                                }
+                                            }
+                                        </ul>
+                                    }
+                                }
+                            </li>
+                        }
+                    }
+                }
+
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="sidenav-content">
+    <div id="mySidenav" class="sidenav">
+        <p id="web-name">
+            <img style="-webkit-filter: brightness(0) invert(1); filter: brightness(0) invert(1); width: 77%;" src="~/Assets/img/logo.png" />
+            <br /><a style="color:#fff" href="tel:@(Library.Configuration.Phone1.Replace(" ",""))">@(Library.Configuration.Phone1)</a>
+        </p>
+        <div id="main-menu">
+            <div class="closebtn">
+                <button class="btn btn-default" id="closebtn">&times;</button>
+            </div>
+            <div class="list-group panel">
+                @{
+                    if (Model != null)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <a href="@( item.SubMenu != null? "#" + item.ID : item.Url==null?"": item.Url.ToLower().Replace("/tr/","/") )" class="list-group-item active" data-toggle="@(item.SubMenu != null? "collapse":"")" data-parent="#main-menu"><span><i class="fa fa-circle link-icon"></i></span>@Html.Raw(item.Name == null ? "" : item.Name.ToUpper())<span>@(Html.Raw( item.SubMenu != null ? "<i class='fa fa-chevron-down arrow'></i>" : ""))</span></a>
+                            {
+                                if (item.SubMenu != null)
+                                {
+                                    <div class="collapse sub-menu" id="@item.ID">
+                                        @{
+                                            foreach (var itemSubMenu in item.SubMenu)
+                                            {
+                                                <a href="../@itemSubMenu.Url.ToLower().Replace("/tr/","/")" class="list-group-item">@itemSubMenu.Name</a>
+                                            }
+                                        }
+                                    </div>
+                                }
+                            }
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

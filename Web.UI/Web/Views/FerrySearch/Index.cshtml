@@ -1,0 +1,455 @@
+﻿ 
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string LangCode = Library.Configuration.Lang;
+    
+    string url = Request.Url.Segments.Last();
+    int dregion = Convert.ToInt32(Request.Form["DepartureRegionID"] == null ? Model.ProductGroupCode.Split(',')[0] : Request.Form["DepartureRegionID"]);
+    int aregion = Convert.ToInt32(Request.Form["ArrivalRegionID"] == null ? Model.ProductGroupCode.Split(',')[1] : Request.Form["ArrivalRegionID"]);
+    LangCode = (LangCode == "TR" ? "" : "/") + LangCode;
+
+    WebService.RestApi restApi = new WebService.RestApi();
+    Entities.Response.Ticket.Region_Response departures = restApi.Rest<Entities.Response.Ticket.Region_Response>(new { }, "api/ticket/departureregion", "Post");
+
+
+    Entities.Response.Ticket.Region_Response arrivals = restApi.Rest<Entities.Response.Ticket.Region_Response>(new { regionID = IsPost? Convert.ToInt32(Request.Form["DepartureRegionID"]) : Convert.ToInt32( Model.ProductGroupCode.Split(',')[0]) }, "api/ticket/arrivalregion", "Post");
+
+    Entities.Response.Ticket.FerryVehicleType api_vehicle_type = restApi.Rest<Entities.Response.Ticket.FerryVehicleType>(new { langCode = LangCode }, "api/ticket/vehicletypes", "Post");
+
+}
+@{
+    <script>
+        var post;
+        var DOGUM_TARIHI='Doğum Tarihi';
+       var SECINIZ = 'Seçiniz';
+        var SeyahatSuresi = 'Seyahat Süresi';
+        var dk = 'DK';
+       var uygun_sefer_seciniz = 'Uygun Sefer Seçiniz';
+       var kalkis_limani = 'Kalkış Zamanı';
+       var varis_limani = 'Varış Limanı';
+       var RouteType = '@(Request.Form["RouteType"])';
+       var DepartureRegionID = '@(Request.Form["DepartureRegionID"] == null ? Model.ProductGroupCode.Split(',')[0] : Request.Form["DepartureRegionID"])';
+       var ArrivalRegionID = '@(Request.Form["ArrivalRegionID"] == null ? Model.ProductGroupCode.Split(',')[1] : Request.Form["ArrivalRegionID"])';
+       var DepartureDate = '@(Request.Form["DepartureDate"])';
+       var ReturnDate = '@(Request.Form["ReturnDate"])';
+       var AdultQuantity = '@(Request.Form["AdultQuantity"])';
+       var ChildQuantity = '@(Request.Form["ChildQuantity"])';
+       var InfantQuantity = '@(Request.Form["InfantQuantity"])';
+        var VehicleQuantity = '@(Request.Form["VehicleQuantity"])';
+
+        var indirim = 'İndirim';
+        var YOLCU_TIPI = 'Yolcu Tipi';
+        var TEK_YON = 'Tek Yön';
+        var ARAC_FIYATLARI = 'Araç Fiyatları';
+        var AYNI_GUN_GIDIS_DONUS = 'Aynı Gün Gidiş Dönüş';
+        var FARKLI_GUN_GIDIS_DONUS = 'Farklı Gün Gidiş Dönüş';
+        var DONUS_ACIK='Dönüş Açık';
+
+    </script>
+}
+<div class="modal fade" id="vehicleprices" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                 
+            </div>
+            <div class="modal-body">
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="search-tabs" id="search-tabs-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+               
+                <div class="tab-content">
+
+                    <div id="flights" class="tab-pane active">
+                        
+                            <div class="row custom-gutter ">
+                                <div class="col-md-12 booking-trips">
+                                    <div class="form-group booking-listing">
+                                        <div class="dash-listing-heading">
+                                            <div class="custom-radio">
+                                                <input type="radio" @(Request.Form["RouteType"]=="1"?"checked":"") name="RouteType" id="OneWay" value="1" />
+                                                <label for="OneWay"><span></span>Tek Yön</label>
+                                            </div>
+                                            <div class="custom-radio">
+                                                <input type="radio" @(Request.Form["RouteType"]==null?"checked":"") @(Request.Form["RouteType"]=="2"?"checked":"") name="RouteType" id="RoudTrip" value="2"  />
+                                                <label for="RoudTrip"><span></span>Gidiş Dönüş</label>
+                                            </div>
+                                            <div class="custom-radio">
+                                                <input type="radio"@(Request.Form["RouteType"]=="3"?"checked":"") name="RouteType" id="Open" value="3" />
+                                                <label for="Open"><span></span>Dönüşü Açık</label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                    <div class="row">
+
+                                        <div class="col-xs-6 col-sm-3 col-md-2">
+
+                                            <div class="form-group right-icon">
+                                                <span>nereden</span>
+                                                <select class="form-control" id="DepartureRegionID">
+
+                                                    @{
+ 
+                                                        
+
+                                                         foreach (var item in departures.result)
+                                                        {
+                                                            <option value="@item.regionID" @( IsPost?  Request.Form["DepartureRegionID"] == item.regionID.ToString() ? "selected" :"" : (item.regionID.ToString() == Model.ProductGroupCode.Split(',')[0] ? "selected" : ""))>@item.name</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                <i class="fa fa-angle-down"></i>
+
+                                            </div>
+                                        </div><!-- end columns -->
+
+                                        <div class="col-xs-6 col-sm-3 col-md-2">
+                                            <div class="form-group right-icon">
+                                                <span>Nereye</span>
+                                                <select class="form-control" id="ArrivalRegionID">
+                                                    @{
+
+                                                        foreach (var item in arrivals.result)
+                                                        {
+
+                                                            <option value="@item.regionID" @( IsPost ? Request.Form["ArrivalRegionID"] == item.regionID.ToString() ? "selected" : "" : (item.regionID.ToString() == Model.ProductGroupCode.Split(',')[1] ? "selected" : ""))>@item.name</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                <i class="fa fa-angle-down"></i>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-2 col-md-2">
+                                            <div class="form-group left-icon">
+                                                <span>Gidiş Tarihi</span>
+                                                <input type="text" class="form-control txtdate" id="DepartureDate" value="@(Request.Form["DepartureDate"]!=null? Request.Form["DepartureDate"] : DateTime.Today.AddDays(1).ToString("dd.MM.yyyy"))" placeholder="__.__.____">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                        </div><!-- end columns -->
+
+                                        <div class="col-xs-6 col-sm-2 col-md-2">
+                                            <div class="form-group left-icon">
+                                                <span>Dönüş Tarihi</span>
+                                                <input type="text" class="form-control txtdate" id="ReturnDate" value="@(Request.Form["ReturnDate"]!=null? Request.Form["ReturnDate"] : DateTime.Today.AddDays(2).ToString("dd.MM.yyyy"))" placeholder="__.__.____">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-4 col-sm-2 col-md-1">
+                                            <div class="form-group right-icon">
+                                                <span>Yetişkin</span>
+                                                <select class="form-control" id="AdultQuantity">
+                                                    <option @(Request.Form["AdultQuantity"]=="1" ?"selected":"") value="1">1</option>
+                                                    <option @(Request.Form["AdultQuantity"]=="2" ?"selected":"") value="2">2</option>
+                                                    <option @(Request.Form["AdultQuantity"]=="3" ?"selected":"") value="3">3</option>
+                                                    <option @(Request.Form["AdultQuantity"]=="4" ?"selected":"") value="4">4</option>
+                                                    <option @(Request.Form["AdultQuantity"]=="5" ?"selected":"") value="5">5</option>
+                                                    <option @(Request.Form["AdultQuantity"]=="6" ?"selected":"") value="6">6</option>
+                                                </select>
+                                                <i class="fa fa-angle-down"></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-4 col-sm-1 col-md-1">
+                                            <div class="form-group right-icon">
+                                                <span>Çocuk</span>
+                                                <select class="form-control" id="ChildQuantity">
+                                                    <option value="0">-</option>
+                                                    <option @(Request.Form["ChildQuantity"]=="1"?"selected":"") value="1">1</option>
+                                                    <option @(Request.Form["ChildQuantity"]=="2"?"selected":"") value="2">2</option>
+                                                    <option @(Request.Form["ChildQuantity"]=="3"?"selected":"") value="3">3</option>
+                                                </select>
+                                                <i class="fa fa-angle-down"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-4 col-sm-2 col-md-1 col-lg-1">
+                                            <div class="form-group right-icon">
+                                                <span>Araç</span>
+                                                <select class="form-control" id="VehicleQuantity" name="VehicleQuantity">
+                                                    <option value="0">-</option>
+                                                    <option @(Request.Form["VehicleQuantity"]=="1"?"selected":"") value="1">1</option>
+                                                    <option @(Request.Form["VehicleQuantity"]=="2"?"selected":"") value="2">2</option>
+                                                </select>
+                                                <i class="fa fa-angle-down"></i>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 vehicles" style="@(Request.Form["VehicleQuantity"]==null || Request.Form["VehicleQuantity"]=="0"?"display:none":"")">
+                                            <div class="row ">
+                                                <div class="col-md-3 vehicle1" style="@(Request.Form["VehicleQuantity"]==null || Request.Form["VehicleQuantity"]=="0"?"display:none":"")">
+                                                    
+                                                    <div class="form-group right-icon">
+                                                        <span>1.Araç</span>
+                                                        <select class="form-control" id="vehicle1" name="vehicle1">
+                                                            <option value="0">-</option>
+                                                            @{
+ 
+                                                                foreach (var item in api_vehicle_type.result)
+                                                                {
+                                                                    <option @(Request.Form["vehicle1"] == item.id.ToString()?"selected":"") value="@item.id">@item.name</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 vehicle2" style="@(Request.Form["VehicleQuantity"]==null || Request.Form["VehicleQuantity"]=="0"?"display:none":(Request.Form["VehicleQuantity"]=="2"?"":"display:none"))" >
+                                                    
+                                                    <div class="form-group right-icon">
+                                                        <span>2. Araç</span>
+                                                        <select class="form-control" id="vehicle2" name="vehicle2">
+                                                            <option value="0">-</option>
+                                                            @{
+
+                                                                foreach (var item in api_vehicle_type.result)
+                                                                {
+                                                                    <option @(Request.Form["vehicle2"] == item.id.ToString() ? "selected" : "") value="@item.id">@item.name</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 childs" style="@(Request.Form["ChildQuantity"]==null || Request.Form["ChildQuantity"]=="0"?"display:none":"")">
+                                                    <div class="row ">
+                                                        <div class="col-md-3 childage1" style="@(Request.Form["ChildQuantity"]==null || Request.Form["ChildQuantity"]=="0"?"display:none":"")">
+                                                            <div class="form-group left-icon">
+                                                                <span>1.  Çocuk Doğum Tarihi</span><input type="text" class="form-control txtdate child_age" id="childage1" name="childage1" value="@(Request.Form["childage1"])" placeholder=""><i class="fa fa-calendar"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 childage2" style="@(Request.Form["ChildQuantity"]==null || Request.Form["ChildQuantity"]=="0"?"display:none":(Request.Form["ChildQuantity"]=="2" || Request.Form["ChildQuantity"]=="3"?"":"display:none"))"><div class="form-group left-icon"><span>2.  Çocuk Doğum Tarihi</span><input type="text" class="form-control txtdate child_age" id="childage2" name="childage2" value="@(Request.Form["childage2"])" placeholder=""><i class="fa fa-calendar"></i></div></div>
+                                                        <div class="col-md-3 childage3" style="@(Request.Form["ChildQuantity"]==null || Request.Form["ChildQuantity"]=="0"?"display:none":(Request.Form["ChildQuantity"]=="3"?"":"display:none"))"><div class="form-group left-icon"><span>3.  Çocuk Doğum Tarihi</span><input type="text" class="form-control txtdate child_age" id="childage3" name="childage3" value="@(Request.Form["childage3"])" placeholder=""><i class="fa fa-calendar"></i></div></div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1">
+                                                    <button class="btn btn-orange" id="ferrysearch">BİLET AL</button>
+                                                </div>
+
+
+                                            </div><!-- end columns -->
+
+                                        </div>
+
+                                        <!-- end columns -->
+
+
+
+                                    </div><!-- end row -->
+                    
+                    </div><!-- end flights -->
+
+
+
+                </div><!-- end tab-content -->
+
+            </div><!-- end columns -->
+
+          
+
+        </div><!-- end row -->
+    </div><!-- end container -->
+</div>
+
+<div class="container" style="padding-bottom:40px;">
+
+    <div class="row">
+        <div class="col-lg-6 goingferry ferrysearch">
+            <div class="searchtitle">
+                <b>Gidiş</b>
+            </div>
+
+        </div>
+        <div class="col-lg-6 returningferry ferrysearch" id="donus">
+            <div class="searchtitle">
+                <b>Dönüş</b>
+            </div>
+        </div>
+        <div class="clear"></div>
+
+    </div>
+    <div class="row" style="margin-top:15px;">
+        <div class="col-lg-12 ferrypricetotal" style="text-align:right">
+            <table style="float:right">
+                <tr>
+                    <td>
+                        <div style="font-size: 24px; padding-bottom: 10px;" itemprop="name"><strong id="discount" itemprop="discount"></strong></div>
+                         
+                        <div style="font-size: 24px; padding-bottom: 10px;" itemprop="name">Toplam Fiyat: <strong id="discountprice" style="text-decoration:line-through" itemprop="discountprice"></strong> <strong id="price" itemprop="price"></strong></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><a link="../FerrySalesCustomer" id="continue" class="selectbtn">İLERİ</a></td>
+                </tr>
+            </table>
+
+
+        </div>
+    </div>
+ 
+ 
+
+
+</div>
+
+        <style>
+            .maintab {
+                margin-top: 14px;
+            }
+
+            .ferrysearch .row {
+                background-color: #fff;
+            }
+
+            .ferrysearch .col-xs-6, .searchtitle, .ferrysearch label {
+                background-color: transparent !important;
+            }
+
+            .ferrysearch img {
+                width: 100%;
+            }
+
+            .ferrysearch i {
+                color: #e22126;
+                font-size: 23px;
+                float: left;
+            }
+
+            .ferrysearch label div {
+                float: left;
+                padding-top: 5px;
+                padding-left: 6px;
+                font-size: 12px;
+            }
+
+            .ferrysearch .row {
+                border: 1px solid #d1d1d1;
+                margin: -12px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                margin-bottom: 15px;
+            }
+
+            .selectex {
+                background-color: #ffefef !important;
+                border: 3px solid #e62a2b !important;
+            }
+
+            .searchtitle {
+                padding: 10px 0px;
+                margin-bottom: 5px;
+                background-color: transparent;
+            }
+
+                .searchtitle b {
+                    font-size: 22px;
+                }
+
+            .selectbtn {
+                background: #e62a2b;
+                padding: 9px 14px;
+                font-size: 16px;
+                color: white;
+                font-weight: bold;
+                float: right;
+                cursor: pointer;
+                border: none;
+            }
+
+                .selectbtn:hover {
+                    background: #e62a2b;
+                    padding: 9px 14px;
+                    font-size: 16px;
+                    color: white;
+                    font-weight: bold;
+                    float: right;
+                }
+
+
+
+            .ferrysearch label, .ferrysearch label {
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 1;
+            }
+
+
+            .selectpassive {
+                background-color: #ddd !important;
+            }
+
+                .selectpassive i {
+                    color: #cac9c9 !important;
+                }
+
+                .selectpassive button {
+                    background-color: #cac9c9 !important;
+                }
+
+                .selectpassive img {
+                    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+                    filter: grayscale(100%);
+                }
+
+            #search-tabs-3.search-tabs {
+                position: initial;
+            }
+
+            #search-tabs-3 .tab-content .tab-pane {
+                padding: 34px 0px;
+            }
+
+            .booking-trips .dash-listing-heading {
+                background-color: transparent;
+            }
+
+            .search-tabs, #search-tabs-3 .tab-pane, .search-tabs .tab-content .tab-pane {
+                background-color: #ededed;
+            }
+
+           
+        </style>
+
+        @section scripts {
+
+
+
+            <script src="~/assets/js/View/FerrySearch.js"></script>
+            <script src="~/assets/js/View/Common.js"></script>
+            <script src="~/assets/js/View/Home.js"></script>
+
+            @{
+                if (IsPost)
+                {
+                    <script>
+                        $('html, body').animate({
+                            scrollTop: $("#" + $("#ReturnDate").attr("id")).offset().top
+                        }, 500, 'linear');
+                    </script>
+                }
+
+            }
+        }
+
+

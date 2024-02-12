@@ -1,0 +1,397 @@
+﻿
+@{
+
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+    string LangCode = Library.Configuration.Lang;
+
+    WebService.RestApi restApi = new WebService.RestApi();
+
+
+
+    Entities.Response.Common.Country_Response country = restApi.Rest<Entities.Response.Common.Country_Response>(null, "api/common/country", "Get");
+    Entities.Response.Common.City_Response city = restApi.Rest<Entities.Response.Common.City_Response>(null, "api/common/citys?country_id=1", "Get");
+    Entities.Response.Common.InvoiceType_Response invctype = restApi.Rest<Entities.Response.Common.InvoiceType_Response>(null, "api/common/invoicetype?langCode=" + LangCode, "Get");
+    Guid VoucherGuid = Guid.Parse(Request.QueryString["Voucher"].ToString());
+    Entities.Response.Voucher.Root sales = restApi.Rest<Entities.Response.Voucher.Root>(null, "api/voucher/getvoucher?langCode=" + LangCode + "&voucherGuid=" + VoucherGuid, "Get");
+    
+    Entities.Response.Booking.Invoice.Root invoice = restApi.Rest<Entities.Response.Booking.Invoice.Root>(null, "api/booking/getinvoice?langCode=" + LangCode + "&voucherGuid=" + VoucherGuid, "Get");
+
+    if (invoice.result == null)
+    {
+        invoice.result = new Entities.Response.Booking.Invoice.Result();
+    }
+    
+    LangCode = (LangCode == "TR" ? "" : "/") + LangCode;
+
+    Entities.Parameter.itinenary.Root expparam = new Entities.Parameter.itinenary.Root();
+    expparam.itinerary = new List<int>();
+
+    foreach (var item in sales.result.passengerTicket.GroupBy(p => p.expeditionID))
+    {
+        expparam.itinerary.Add(item.Key);
+    }
+
+    expparam.langCode = LangCode;
+    Entities.Response.Ticket.itinenary.Root ExpeditionInform = restApi.Rest<Entities.Response.Ticket.itinenary.Root>(expparam, "api/ticket/itinerary", "Post");
+
+}
+
+<style>
+    dt, kbd kbd, label {
+        font-weight: normal !important;
+        font-size: 13px;
+        width: 100%;
+    }
+</style>
+<div class="main_contant">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="wizard_steps" style="margin-top:10px;margin-bottom:40px;">
+                    <div style="display:none" id="validation"></div>
+                    <div class="wizard_step active   step1">
+                        <div class="information">
+                            <div class="info_lt" style="padding: 17px;margin-bottom: 20px;">
+
+                                <div class="row">
+                                    <div class="billingaddress col-md-12">
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Fatura Tipi</label>
+                                            <select name="invoice" id="InvoiceType" class="form-control">
+                                                @{
+                                                    foreach (var item in invctype.result)
+                                                    {
+                                                        <option @(invoice.result.invoiceType == item.id ? "selected" : "" ) value="@item.id">@item.name</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="adinputrow bireysel row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Ad</label>
+                                            <input type="text" value="@invoice.result.name" name="name" id="Name" class="form-control">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Soyad</label>
+                                            <input type="text" name="surname" value="@invoice.result.surName" id="SurName" class="form-control">
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>TC NO</label>
+                                            <input type="text" name="CitizenshipID" value="@invoice.result.citizenshipID" id="CitizenshipID" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Eposta Adresi</label>
+                                            <input type="text" class="form-control" id="Email" value="@invoice.result.email" name="company_name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Gsm</label>
+                                            <input type="email" name="gsm" id="Gsm" placeholder="999-999-9999" value="@invoice.result.gsm" class="form-control">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <select id="gsmcountryphonecode" class="form-control" style="width:100%; display:none">
+                                                            <option value="0">0</option>
+                                                            @{
+                                                                foreach (var item in country.result)
+                                                                {
+                                                                    <option @(item.id == 1 ? "selected" : "") value="@item.phoneCode">@item.name (@item.phoneCode) </option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="adinputrowfull  col-md-12 company" style="display:none">
+                                        <div class="form-group">
+                                            <label>Ünvan</label>
+                                            <input type="text" class="form-control" id="Title" value="@invoice.result.title" name="title">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Ülke</label>
+                                            <select name="choose" id="CountryID" class="form-control">
+                                                @{
+                                                    foreach (var item in country.result)
+                                                    {
+                                                        <option @(invoice.result.countryID == 0 ? (item.id == 1 ? "selected" : "") : (item.id == invoice.result.countryID ? "selected" : "")) value="@item.id">@item.name</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Şehir</label>
+                                            <select name="city" id="CityID" class="form-control">
+                                                <option value="0">-</option>
+                                                @{
+                                                    foreach (var item in city.result)
+                                                    {
+                                                        <option value="@item.id" @(invoice.result.cityID == item.id ? "selected" : "")>@item.name</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>İlçe</label>
+                                            <select name="district" id="DistrictID" class="form-control">
+                                                <option value=""></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Adres</label>
+                                            <textarea id="Address" class="form-control">@(invoice.result.address)</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row company" style="display:none">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Vergi Dairesi</label>
+                                            <input id="TaxOffice" type="text" name="dtax" value="@(invoice.result.taxOffice)" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>vergi No</label>
+                                            <input type="email" id="TaxNumber" name="taxnumber" value="@(invoice.result.taxNo)" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin-bottom:40px; margin-top:20px;">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-orange saveinvoice"><i class="fa fa-chevron-right" aria-hidden="true"></i> İLERİ</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row" style="border: 1px solid #d1d1d1;border-radius: 5px; font-weight:600 !important; background-color:#fff; margin-top:12px;    border: 1px solid #d1d1d1;margin: -12px;border-radius: 6px;margin-bottom: 15px;margin-top: 12px;">
+                    @{
+                        if (sales.result.extraService.Count > 0)
+                        {
+                            <div class="col-md-12">
+                                <div class="col-md-12"><br /><h3><b>Hizmetler </b></h3></div>
+                                @{ foreach (var item in sales.result.extraService)
+                                    {
+                                <div class="col-md-12"><label><b> @item.productName - @item.serviceDate.ToString("dd.MM.yyyy")</b></label></div>
+                                <div class="col-md-12"><label>@item.customerTypeName</label></div>
+                                <div class="col-md-12"><label>@item.name @item.surName</label></div>
+                                <div class="col-md-12">
+                                    <hr />
+                                </div>
+                                        }
+                                    }
+                            </div>
+                        }
+                    }
+                    <div class="col-md-12">
+
+
+                        @{ if (ExpeditionInform.result.Count > 0)
+                            {
+
+                                <div class="col-lg-12" style="border-bottom:1px solid #808080;padding: 7px; margin-bottom:5px; margin-top:5px;font-weight:400;">
+                                    <div class="row">
+                                        <div class="col-lg-12" style="font-size:16px;    font-weight: bold;">
+                                           Gidiş
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <img style="width:100%" src="@(Library.Configuration.SystemUrl)/storage/@(Library.Configuration.SystemCompanyID)/ferry/@(ExpeditionInform.result[0].ferryID)/large/@(ExpeditionInform.result[0].picture)" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-md-5"><label>Feribot</label></div>
+                                        <div class="col-md-7"><label>@ExpeditionInform.result[0].ferryName</label></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-md-5"><label>Kalkış Limanı</label></div>
+                                        <div class="col-md-7"><label>@ExpeditionInform.result[0].departureRegionName</label></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-md-5"><label>Varış Limanı</label></div>
+                                        <div class="col-md-7"><label>@ExpeditionInform.result[0].arrivalRegionName</label></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-md-5"><label>Sefer Tarihi</label></div>
+                                        <div class="col-md-7"><label>@ExpeditionInform.result[0].serviceDate.ToShortDateString()</label></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-md-5"><label>Hareket Saati</label></div>
+                                        <div class="col-md-7"><label>@ExpeditionInform.result[0].departureTime</label></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-md-5"><label>Varış Saati</label></div>
+                                        <div class="col-md-7"><label>@ExpeditionInform.result[0].arrivalTime</label></div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+                            } }
+
+                    </div>
+                    <div class="col-md-12">
+                        @{ if (ExpeditionInform.result.Count > 1)
+                            {
+                                if (ExpeditionInform.result[1] != null)
+                                {
+                                    <div class="col-lg-12" style="border-bottom:1px solid #808080;padding: 7px; margin-bottom:5px; margin-top:5px;font-weight:400;">
+                                        <div class="row">
+                                            <div class="col-lg-12" style="font-size:16px;    font-weight: bold;">
+                                                Dönüş
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <img style="width:100%" src="@(Library.Configuration.SystemUrl)/storage/@(Library.Configuration.SystemCompanyID)/ferry/@(ExpeditionInform.result[1].ferryID)/large/@(ExpeditionInform.result[1].picture)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-md-5"><label>Feribot</label></div>
+                                            <div class="col-md-7"><label>@ExpeditionInform.result[1].ferryName</label></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-md-5"><label>Kalkış Limanı</label></div>
+                                            <div class="col-md-7"><label>@ExpeditionInform.result[1].departureRegionName</label></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-md-5"><label>Varış Limanı</label></div>
+                                            <div class="col-md-7"><label>@ExpeditionInform.result[1].arrivalRegionName</label></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-md-5"><label>Sefer Tarihi</label></div>
+                                            <div class="col-md-7"><label>@ExpeditionInform.result[1].serviceDate.ToShortDateString()</label></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-md-5"><label>Hareket Saati</label></div>
+                                            <div class="col-md-7"><label>@ExpeditionInform.result[1].departureTime</label></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-md-5"><label>Varış Saati</label></div>
+                                            <div class="col-md-7"><label>@ExpeditionInform.result[1].arrivalTime</label></div>
+                                        </div>
+                                    </div>
+                                }
+                            } }
+
+                        <div class="col-lg-12">
+                            @{
+                                foreach (var item in sales.result.salesCurrency.Where(p => p.typeID == 1 || p.typeID == 2))
+                                {
+                                    <h5 itemprop="name" id="ferrypricetotal">Toplam Fiyat: <strong itemprop="price">@(item.amount) @(item.symbol)</strong></h5>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- container ends -->
+@section scripts {
+    <script>
+
+    var payment = '/payment';
+    $(".wantnot").css("display", "none");
+    $(".subinnernav").css("margin-bottom", "0px");
+
+    </script>
+    <script src="~/assets/js/jquery.mask.js"></script>
+    <script src="~/assets/js/View/Invoice.js"></script>
+}

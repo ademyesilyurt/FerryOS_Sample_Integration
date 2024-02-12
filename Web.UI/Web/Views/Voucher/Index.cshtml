@@ -1,0 +1,72 @@
+﻿@model Library.Domain.RouteTable.RouteTable
+@{
+
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+    Library.Data.PageLanguage.PageLanguage Lang = new Library.Data.PageLanguage.PageLanguage();
+    string LangCode = Configuration.Lang;
+    int LangID = Library.Data.Language.Language.SelectLanguageAll().Where(P => P.Code == LangCode).FirstOrDefault().ID;
+    WebService.RestApi restApi = new WebService.RestApi();
+
+    Guid VoucherGuid = Guid.Parse( Request.QueryString["Voucher"].ToString());
+    Entities.Response.Voucher.Root sales = restApi.Rest<Entities.Response.Voucher.Root>(null, "api/voucher/getvoucher?langCode=" + LangCode + "&voucherGuid=" + VoucherGuid, "Get");
+
+    string url = Request.Url.Segments.Last().ToString();
+    IEnumerable<Library.Domain.PageLanguage.PageLanguage> pagelang = Library.Data.PageLanguage.PageLanguage.PageLanguages(31, LangID);
+    LangCode = (LangCode == "TR" ? "" : "/") + LangCode;
+}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12" style="margin-bottom:70px; margin-top:50px;text-align:center;">
+
+                @{
+                    if (sales.result.step == 4)
+                    {
+                        <img src="~/Assets/img/check-animation-v2.gif" />
+                        <br />
+                        <h3 itemprop="name" style="color:#36AB00; text-align:center;">@pagelang.Where(P => P.Code == "REZERVASYONUNUZ_TAMAMLANMISTIR").FirstOrDefault().Name</h3>
+                        <h4 style="text-align:center;">@pagelang.Where(P => P.Code == "VOUCHER_NUMARANIZ").FirstOrDefault().Name : @sales.result.id</h4>
+                        <br />
+                        <div style="margin:0 auto;">
+                            <a target="_blank" style="width: 200px;" class="greenbtn" href="@(Library.Configuration.SystemUrl)/Voucher?SalesID=@sales.result.guid"> @pagelang.Where(P => P.Code == "VOUCHER_GORUNTULE").FirstOrDefault().Name</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <h3 itemprop="name" style="color:red; text-align:center;">@pagelang.Where(P => P.Code == "REZERVASYONUNUZ_TAMAMLANMAMISTIR").FirstOrDefault().Name</h3>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <style>
+        .installmentchart tr td {
+            cursor: pointer;
+        }
+
+            .installmentchart tr td:hover {
+                background-color: #d90000;
+                color: white;
+                padding-left: 5px;
+            }
+    </style>
+@section scripts {
+    <script src="/Content/script/View/Voucher.js"></script>
+    }
+    <div class="clear"></div>
+ <style>
+     .subinnernav
+     {
+          margin-bottom:0px;
+     }
+ </style>
+ 
+@Html.Raw(Model.Content)
+
+
+
+
+@{
+    Library.Domain.User.Authendication au = new Library.Domain.User.Authendication();
+    au.User.Basket = null;
+
+}

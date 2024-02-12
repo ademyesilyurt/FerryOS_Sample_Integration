@@ -1,0 +1,500 @@
+﻿ 
+@{
+
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+
+    
+
+
+    string LangCode = Library.Configuration.Lang;
+    
+    WebService.RestApi restApi = new WebService.RestApi();
+
+
+    Entities.Parameter.itinenary.Root expparam = new Entities.Parameter.itinenary.Root();
+    expparam.itinerary = new List<int>();
+
+    if (!string.IsNullOrEmpty(Request.QueryString["DepartureExpeditionID"]))
+    {
+        expparam.itinerary.Add(Convert.ToInt32(Request.QueryString["DepartureExpeditionID"]));
+    }
+
+    if (!string.IsNullOrEmpty(Request.QueryString["ReturnExpeditionID"]))
+    {
+        expparam.itinerary.Add(Convert.ToInt32(Request.QueryString["ReturnExpeditionID"]));
+    }
+    expparam.langCode = LangCode;
+    Entities.Response.Ticket.itinenary.Root ExpeditionInform = restApi.Rest<Entities.Response.Ticket.itinenary.Root>(expparam, "api/ticket/itinerary", "Post");
+
+
+    string[] MandatoryFields = string.IsNullOrEmpty(ExpeditionInform.result.FirstOrDefault().mandatoryFields) ? new String[] { "" } : ExpeditionInform.result.FirstOrDefault().mandatoryFields.Split(',');
+
+
+    Entities.Response.Common.Country_Response country = restApi.Rest<Entities.Response.Common.Country_Response>(null, "api/common/country", "Get");
+
+    Entities.Response.Ticket.FerryVehicleType vehicletype = restApi.Rest<Entities.Response.Ticket.FerryVehicleType>(new { langCode = LangCode }, "api/ticket/vehicletypes", "Post");
+    Entities.Response.Common.Gender_Response gender = restApi.Rest<Entities.Response.Common.Gender_Response>(null, "api/common/genders?langCode=" + LangCode, "Get");
+    
+
+    int AdultQuantity = Convert.ToInt32(Request.QueryString["AdultQuantity"]);
+    int ChildQuantity = Convert.ToInt32(Request.QueryString["ChildQuantity"]);
+    int VehicleQuantity = Convert.ToInt32(Request.QueryString["VehicleQuantity"]);
+    int VehicleTypeID1 = Convert.ToInt32(Request.QueryString["VehicleTypeID1"]);
+    int VehicleTypeID2 = Convert.ToInt32(Request.QueryString["VehicleTypeID2"]);
+    LangCode = (LangCode == "TR" ? "" : "/") + LangCode;
+}
+<script>
+    var SATIN_ALMA_YONLENDIRME_UYARI = "Yönlendiriliyorsunuz";
+    var BILETLERINIZ_EKLENMISTIR="Biletleriniz eklenmiştir";
+</script>
+
+<div class="main_contant">
+    <div class="container">
+        <div class="row customers">
+
+
+            <div class="col-sm-8">
+                <div class="row" style="border-radius: 5px; border-bottom:1px solid #808080; margin-top:12px;    border: 1px solid #d1d1d1;margin: -12px;border-radius: 6px;margin-bottom: 15px;margin-top: 12px;">
+
+                    <div class="row" style=" border:1px solid #e7e7e7;    background: #fcfcfc;    margin: 0px; padding:7px; margin-bottom:7px;">
+                        <div class="row">
+                            <div class="col-lg-4"><input id="Gsm" class="form-control" placeholder="Cep Telefonu" /> </div>
+                            <div class="col-lg-8"><input id="Email" class="form-control" placeholder="EPosta" /> </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div id="validation"></div>
+
+
+                        @{
+                            for (int i = 0; i < AdultQuantity; i++)
+                            {
+                                <div class="row passengerinfoinputs" style="background: #f8f8f8;padding: 7px; margin-bottom:5px; margin-top:5px;font-weight:400;" id="@(i+1)">
+                                    <div class="col-md-12">
+                                        @(i + 1).Yetişkin
+                                    </div>
+                                </div>
+                                <div class="row adults" id="@(i+1)">
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Cinsiyet</label>
+                                            <select name="AdultGender@(i+1)" class="form-control" id="AdultGender@(i+1)">
+                                                @{
+                                                    foreach (var item in gender.result)
+                                                    {
+                                                        <option value="@item.id">@item.name</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Ad</label>
+                                            <input type="text" class="form-control Name" id="AdultName@(i+1)" aria-describedby="emailHelp" placeholder="Ad">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Soyad</label>
+                                            <input type="text" class="form-control" id="AdultSurName@(i+1)" aria-describedby="emailHelp" placeholder="Soyad">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Doğum Tarihi</label>
+                                            <input type="text" class="form-control txtdate" id="AdultBirthDate@(i+1)" aria-describedby="emailHelp" placeholder="__.__.____">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-2" style="@(MandatoryFields.Where(P=>P.ToString()=="PassportNo").Count()==0?"display:none":"")">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Pasaport No</label>
+                                            <input type="text" class="form-control" id="AdultPassportNo@(i+1)" aria-describedby="emailHelp" placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2" style="@(MandatoryFields.Where(P=>P.ToString()=="PassportExpireDate").Count()==0?"display:none":"")">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Pazaport Bitiş Tarihi</label>
+                                            <a><input type="text" class="form-control txtdate" id="AdultPassportExpireDate@(i+1)" aria-describedby="emailHelp" placeholder="__.__.____"></a>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2" style="@(MandatoryFields.Where(P=>P.ToString()=="CountryID").Count()==0?"display:none":"")">
+                                        <div class="form-group">
+                                            <label for="AdultCountry@(i+1)">Uyruk</label>
+                                            <select name="AdultCountry@(i+1)" id="AdultCountry@(i+1)" class="form-control">
+                                                @{
+                                                    foreach (var item in country.result)
+                                                    {
+                                                        <option value="@item.id">@item.name</option>
+                                                    }
+                                                }
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3" style="@(MandatoryFields.Where(P=>P.ToString()=="CitizenshipID").Count()==0?"display:none":"")">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">TC No</label>
+                                            <input type="text" class="form-control" id="AdultCitizenshipID@(i+1)" aria-describedby="emailHelp" placeholder="">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="clear"></div>
+                                <hr />
+                            }
+                        }
+                        @{
+                            for (int i = 0; i < ChildQuantity; i++)
+                            {
+
+
+                                <div class="row" style="background: #f8f8f8;padding: 7px; margin-bottom:5px; margin-top:5px; font-weight:400;">
+                                    <div class="col-md-12">
+                                        @(i + 1).Cocuk
+                                    </div>
+                                </div>
+                                <div class="row childs" id="@(i+1)">
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <label for="ChildGender@(i+1)">Cinsiyet</label>
+                                            <select name="AdultGender@(i+1)" class="form-control" id="ChildGender@(i+1)">
+                                                @{
+                                                    foreach (var item in gender.result)
+                                                    {
+                                                        <option value="@item.id">@item.name</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <label for="ChildName@(i+1)">Ad</label>
+                                            <input type="text" class="form-control" id="ChildName@(i+1)" aria-describedby="emailHelp" placeholder="Ad">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <label for="ChildSurName@(i+1)">Soyad</label>
+                                            <input type="text" class="form-control" id="ChildSurName@(i+1)" aria-describedby="emailHelp" placeholder="Soyad">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <label for="ChildBirthDate@(i+1)">Doğum Tarihi</label>
+                                            <input type="text" class="form-control txtdate" id="ChildBirthDate@(i+1)" value="@(Request.QueryString["Child"+(i+1)+"Age"])" aria-describedby="emailHelp" placeholder="__.__.____">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-2" style="@(MandatoryFields.Where(P=>P.ToString()=="PassportNo").Count()==0?"display:none":"")">
+                                        <div class="form-group">
+                                            <label for="ChildPassportNo@(i+1)">Pasaport No</label>
+                                            <input type="text" class="form-control" id="ChildPassportNo@(i+1)" aria-describedby="emailHelp" placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2" style="@(MandatoryFields.Where(P=>P.ToString()=="PassportExpireDate").Count()==0?"display:none":"")">
+                                        <div class="form-group">
+                                            <label for="ChildPassportExpireDate@(i+1)">Pazaport Bitiş Tarihi</label>
+                                            <input type="text" class="form-control txtdate" id="ChildPassportExpireDate@(i+1)" aria-describedby="emailHelp" placeholder="__.__.____">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-2" style="@(MandatoryFields.Where(P=>P.ToString()=="CountryID").Count()==0?"display:none":"")">
+                                        <div class="form-group">
+                                            <label for="ChildCountry@(i+1)">Uyruk</label>
+                                            <select name="AdultCountry@(i+1)" id="ChildCountry@(i+1)" class="form-control">
+                                                @{
+                                                    foreach (var item in country.result)
+                                                    {
+                                                        <option value="@item.id">@item.name</option>
+                                                    }
+                                                }
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3" style="@(MandatoryFields.Where(P=>P.ToString()=="CitizenshipID").Count()==0?"display:none":"")">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">TC No</label>
+                                            <input type="text" class="form-control" id="ChildCitizenshipID@(i+1)" aria-describedby="emailHelp" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clear"></div>
+                                <hr />
+                            }
+                        }
+
+                        @{
+                            if (VehicleQuantity > 0)
+                            {
+                                <div class="row vehicles" id="1">
+
+                                    <div class="col-md-3">
+                                        <label>1.Araç</label>
+                                        <input type="text" id="VehicleTypeID1" typeof="@VehicleTypeID1" title="@(vehicletype.result.Where(P => P.id == VehicleTypeID1).FirstOrDefault().name)" name="name" value="@(vehicletype.result.Where(P => P.id == VehicleTypeID1).FirstOrDefault().name)" class="form-control" readonly style="background-color:#ECECEC">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Plaka</label>
+                                        <input type="text" id="Plate1" name="name" class="form-control">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Marka</label>
+                                        <input type="text" id="Brand1" name="name" class="form-control">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Model</label>
+                                        <input type="text" id="Model1" name="name" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Gidis Sürücüsü</label>
+                                        <select name="nationality" id="DriveCustomerNumber1" class="form-control"></select>
+                                    </div>
+
+                                    <div class="col-md-6" style="@(expparam.itinerary.Count>1?"":"display:none")">
+                                        <label>Dönüş Sürücüsü</label>
+                                        <select name="nationality" id="ReturnDriveCustomerNumber1" class="form-control"></select>
+                                    </div>
+                                    <div class="clear"></div>
+                                </div> 
+                                <hr />
+                            }
+                        }
+                        @{
+                            if (VehicleQuantity > 1)
+                            {
+                                <div class="row vehicles" id="2">
+
+                                    <div class="col-md-3">
+                                        <label>2.Araç</label>
+                                        <input type="text" id="VehicleTypeID2" typeof="@VehicleTypeID2" title="@(vehicletype.result.Where(P => P.id == VehicleTypeID2).FirstOrDefault().name)" name="name" value="@(vehicletype.result.Where(P => P.id == VehicleTypeID2).FirstOrDefault().name)" class="form-control" readonly style="background-color:#ECECEC">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Plaka</label>
+                                        <input type="text" id="Plate2" name="name" class="form-control">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Marka</label>
+                                        <input type="text" id="Brand2" name="name" class="form-control">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Model</label>
+                                        <input type="text" id="Model2" name="name" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Gidiş Dönüş</label>
+                                        <select name="nationality" id="DriveCustomerNumber2" class="form-control"></select>
+                                    </div>
+
+                                    <div class="col-md-6" style="@(expparam.itinerary.Count>1?"":"display:none")">
+                                        <label>Dönüş Sürücü</label>
+                                        <select name="nationality" id="ReturnDriveCustomerNumber2" class="form-control"></select>
+                                    </div>
+                                    <div class="clear"></div>
+                                </div>
+                            }
+                        }
+
+                        <div class="row" style="margin-top:20px; margin-bottom:20px;">
+                            <div class="col-lg-12">
+                                <button class="btn btn-orange" type="button" onclick="Add();" link="../Invoice">İLERİ</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+
+                <div class="row" style="border: 1px solid #d1d1d1;border-radius: 5px; font-weight:600 !important; background-color:#fff; margin-top:12px;    border: 1px solid #d1d1d1;margin: -12px;border-radius: 6px;margin-bottom: 15px;margin-top: 12px;">
+
+                    <div class="col-md-12">
+
+
+                        @{ if (ExpeditionInform.result.Count > 0)
+                            {
+
+                                <div class="col-lg-12" style="border-bottom:1px solid #808080;padding: 7px; margin-bottom:5px; margin-top:5px;font-weight:400;">
+                                    <div class="row">
+                                        <div class="col-lg-12" style="font-size:16px;    font-weight: bold;">
+                                            Gidiş
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 col-12">
+                                    <div class="row">
+                                        <div class="col-md-12"><img style="width:100%;  " src="@(Library.Configuration.SystemUrl)/storage/@(Library.Configuration.SystemCompanyID)/ferry/@(ExpeditionInform.result[0].ferryID)/large/@(ExpeditionInform.result[0].picture)"></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-md-5"><label>Feribot</label></div>
+                                        <div class="col-md-7"><label>@ExpeditionInform.result[0].ferryName</label></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-md-5"><label>Kalkış Limanı</label></div>
+                                        <div class="col-md-7"><label>@ExpeditionInform.result[0].departureRegionName</label></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-md-5"><label>Varış Limanı</label></div>
+                                        <div class="col-md-7"><label>@ExpeditionInform.result[0].arrivalRegionName</label></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-md-5"><label>Sefer Tarihi</label></div>
+                                        <div class="col-md-7"><label>@ExpeditionInform.result[0].serviceDate.ToShortDateString()</label></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-md-5"><label>Hareket Saati</label></div>
+                                        <div class="col-md-7"><label>@ExpeditionInform.result[0].departureTime</label></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-md-5"><label>Varış Saati</label></div>
+                                        <div class="col-md-7"><label>@ExpeditionInform.result[0].arrivalTime</label></div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+                            } }
+
+                    </div>
+                    <div class="col-md-12">
+                        @{ if (ExpeditionInform.result.Count > 1)
+                            {
+                                if (ExpeditionInform.result[1] != null)
+                                {
+                                    <div class="col-lg-12" style="border-bottom:1px solid #808080;padding: 7px; margin-bottom:5px; margin-top:5px;font-weight:400;">
+                                        <div class="row">
+                                            <div class="col-lg-12" style="font-size:16px;    font-weight: bold;">
+                                                Dönüş
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-12">
+                                        <img style="width:100%; max-height:300px" src="@(Library.Configuration.SystemUrl)/storage/@(Library.Configuration.SystemCompanyID)/ferry/@(ExpeditionInform.result[1].ferryID)/large/@(ExpeditionInform.result[1].picture)">
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-md-5"><label>Feribot</label></div>
+                                            <div class="col-md-7"><label>@ExpeditionInform.result[1].ferryName</label></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-md-5"><label>Kalkış Limanı</label></div>
+                                            <div class="col-md-7"><label>@ExpeditionInform.result[1].departureRegionName</label></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-md-5"><label>Varış Limanı</label></div>
+                                            <div class="col-md-7"><label>@ExpeditionInform.result[1].arrivalRegionName</label></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-md-5"><label>Sefer Tarihi</label></div>
+                                            <div class="col-md-7"><label>@ExpeditionInform.result[1].serviceDate.ToShortDateString()</label></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-md-5"><label>Hareket Saati</label></div>
+                                            <div class="col-md-7"><label>@ExpeditionInform.result[1].departureTime</label></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-md-5"><label>Varış Saati</label></div>
+                                            <div class="col-md-7"><label>@ExpeditionInform.result[1].arrivalTime</label></div>
+                                        </div>
+                                    </div>
+
+
+
+                                }
+
+
+                            } }
+
+                        <div class="col-lg-12">
+                            <h5 itemprop="name" id="ferrypricetotal">Toplam Fiyat : <strong itemprop="price"> €</strong></h5>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12" style="font-size:13px;">
+                    @{
+
+                        int[] vs = new int[ExpeditionInform.result.Where(P => P != null).Count()];
+                        for (int i = 0; i < ExpeditionInform.result.Where(P => P != null).Count(); i++)
+                        {
+
+                            vs[i] = ExpeditionInform.result.Where(P => P != null).ToList()[i].ferryID;
+                        }
+
+                        Entities.Response.Ticket.FerryContent contents = restApi.Rest<Entities.Response.Ticket.FerryContent>(new { langCode = LangCode, ferryID = vs }, "api/ticket/ferrycontent", "Get");
+                        if (contents.result != null)
+                        {
+                            foreach (var item in contents.result)
+                            {
+                                <br />
+                                <h3>@(Html.Raw(item.ferryName)) - @(Html.Raw(item.ferryCompanyName))</h3>
+                                <div>@(Html.Raw(item.ferryContent))</div>
+                            }
+                        }
+                        <br />
+                    }
+                </div>
+                <div class="clear"></div>
+            </div>
+
+            <div class="clear"></div>
+        </div>
+    </div>
+</div>
+<script>
+    var invoiceurl = "../Invoice";
+</script>
+@section scripts {
+    <script src="~/assets/js/View/FerrySalesCustomer.js"></script>
+}
+<style>
+
+    .customers label {
+        font-weight: 300;
+        font-size: 13px;
+        width: 100%;
+    }
+</style>

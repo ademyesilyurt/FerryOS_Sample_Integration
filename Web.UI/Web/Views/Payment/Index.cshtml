@@ -1,0 +1,343 @@
+﻿@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    string LangCode = Library.Configuration.Lang;
+    
+
+    WebService.RestApi restApi = new WebService.RestApi();
+
+
+    Guid VoucherGuid = Guid.Parse(Request.QueryString["Voucher"].ToString());
+    Entities.Response.Voucher.Root sales = restApi.Rest<Entities.Response.Voucher.Root>(null, "api/voucher/getvoucher?langCode=" + LangCode + "&voucherGuid=" + VoucherGuid, "Get");
+    Entities.Response.Booking.getvposbank.Root sbank = restApi.Rest<Entities.Response.Booking.getvposbank.Root>(new { langCode = LangCode, bankID = 0, creditCardID = 0, installmentID = 0, paymentType = 1, voucherGuid = VoucherGuid.ToString() }, "api/booking/getvposbank", "Post");
+    Entities.Response.Booking.Invoice.Root invoice = restApi.Rest<Entities.Response.Booking.Invoice.Root>(null, "api/booking/getinvoice?langCode=" + LangCode + "&voucherGuid=" + VoucherGuid, "Get");
+
+
+    string cdn = "..";
+
+
+    
+    if (IsPost)
+    {
+        if (Request.QueryString["T"] == null)
+        {
+
+            string postdata = Request.Form.ToString();
+            string[] postdatalist = postdata.Split('&');
+
+            List<Entities.Parameter.Input3d> result = new List<Entities.Parameter.Input3d>();
+            foreach (var item in Request.Form)
+            {
+                Entities.Parameter.Input3d i = new  Entities.Parameter.Input3d();
+                i.name = item.ToString();
+                i.value = postdatalist.Where(P => P.ToString().Split('=')[0] == item.ToString()).LastOrDefault().Split('=')[1];
+                i.id = "";
+                i.type = "";
+                result.Add(i);
+            }
+            foreach (var item in Request.QueryString.AllKeys)
+            {
+                if (item != null)
+                {
+                    Entities.Parameter.Input3d i = new Entities.Parameter.Input3d();
+                    i.name = item.ToString();
+                    i.value = Request.QueryString[item.ToString()];
+                    i.id = "";
+                    i.type = "";
+                    result.Add(i);
+                }
+            }
+
+            Entities.Parameter.VPosPayment3DSecureReturn re = new  Entities.Parameter.VPosPayment3DSecureReturn();
+            re.inputs = result;
+            re.langCode = LangCode;
+            re.voucherGuid = Guid.Parse( Request.QueryString["Voucher"].ToString());
+
+            Entities.Response.Booking.VPosPayment3DSecureReturn.Root api = restApi.Rest<Entities.Response.Booking.VPosPayment3DSecureReturn.Root>(re, "api/booking/VPosPayment3DSecureReturn", "Post");
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function (event) {
+                    @(api.success ? Html.Raw("UIAlert('3D İle ödeme işleminiz başarıyla tamamlanmıştır.');location.href = 'https://' + location.hostname +'/'+ $('#language').attr('content') + '/voucher?Voucher=' + getParameterByName('Voucher');") : Html.Raw("UIAlert(JSON.parse('" + (Newtonsoft.Json.JsonConvert.SerializeObject(api.valid).ToString().Replace("\\", string.Empty)) + "'))") )
+                });
+
+            </script>
+            }
+            else
+            {
+
+            }
+
+        }
+    }
+<script>
+
+    var sozlesmeokuyunuz = 'Sözleşmeleri okuyunuz';
+    var ONAY = "Okudum onaylıyorum";
+    var ISLEMINIZE_DEVAM_ETMEK_ICIN_TIKLAYINIZ = "Ödemeye Devam Etmek İŞçin Tıklayınız";
+</script>
+<section class="flexslider-container" id="">
+
+    <div class="container">
+        <div class="row" style="margin-top:24px;">
+            <div class="col-md-7">
+                <div class="row" style=" border: 1px solid #d1d1d1;margin: -6px;padding-top: 10px;padding-bottom: 10px;border-radius: 6px;margin-bottom: 15px; background-color:#fff;">
+                    <div class="col-lg-12">
+                        <form action="#" method="post">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Ad</label>
+                                    <input type="text" name="payer_name" id="Name" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Soyad</label>
+                                    <input type="text" name="surname" id="SurName" class="form-control">
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 cardtype" style="display:none">
+                                    <label>Kart Türü</label>
+                                    <select name="cardtype" id="BankID" class="form-control">
+                                        @{
+                                            foreach (var item in sbank.result.Where(P => P.salesBankInstallmentList.Sum(X => X.amount) > 0))
+                                            {
+                                                <option value="@item.creditCardID">@item.cardName</option>
+                                            }
+                                        }
+
+                                    </select>
+                                </div>
+                                <div class="col-md-3 installment" style="display:none">
+                                    <label>Taksit</label>
+                                    <select name="installment" id="InstallmentID" class="form-control">
+                                        @{
+                                            foreach (var item in sbank.result.FirstOrDefault().salesBankInstallmentList.Where(P => P.amount > 0))
+                                            {
+                                                <option value="@item.id">@(item.installment).Taksit </option>
+                                            }
+
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label>kart Numarası</label>
+                                    <input type="text" id="CardNO" name="cardno" class="form-control">
+                                </div>
+
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Son Kullanma</label>
+                                            <select name="month" class="form-control" id="ExpireMonth">
+                                                <option value="">-</option>
+                                                <option value="01">1</option>
+                                                <option value="02">2</option>
+                                                <option value="03">3</option>
+                                                <option value="04">4</option>
+                                                <option value="05">5</option>
+                                                <option value="06">6</option>
+                                                <option value="07">7</option>
+                                                <option value="08">8</option>
+                                                <option value="09">9</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                                <option value="12">12</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Yıl</label>
+                                            <select name="year" id="ExpireYear" class="form-control">
+                                                <option value="">-</option>
+                                                @{
+                                                    for (int i = 0; i < 15; i++)
+                                                    {
+                                                        <option value="@(DateTime.Today.AddYears(i).Year)">@(DateTime.Today.AddYears(i).Year)</option>
+                                                    }
+                                                }
+
+
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+
+
+
+
+
+                                </div>
+                                <div class="col-md-3 ccv">
+                                    <label>CCV</label>
+                                    <input type="text" id="Cvc" name="ccv" class="form-control">
+                                    <span class="helpicon"></span>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="col-md-5">
+                                    <label>Tutar</label>
+
+                                    <h3 id="Amount">@(string.Format("{0:c}", sbank.result.FirstOrDefault().salesBankInstallmentList.FirstOrDefault().amount))</h3>
+
+                                </div>
+                            </div>
+
+                            <div class="form-check" style="@(sbank.result.FirstOrDefault().secure3D ?"":"display:none")">
+                                <input  @(sbank.result.FirstOrDefault().secure3D ? "checked" : "") @(sbank.result.FirstOrDefault().secure3DMandatory ? "disabled" : "") type="checkbox" name="sameadd" class="form-check-input" id="secure3d">
+                                <label class="form-check-label" style="width:auto;" for="secure3d">3D ile ödemek istiyorum</label>
+                            </div>
+                            <div class="extagree stdcheck2">
+                                <div class="extracheck">
+                                    <input type="checkbox" name="sameadd" class="stdcheck" id="bilgilendirmeform">
+                                    <label for="bilgilendirmeform" style="width:auto;"><strong>Ön bilgilendirme onay</strong></label>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="extracheck">
+                                    <input type="checkbox" name="sameadd" class="stdcheck" id="sozlesmeform">
+                                    <label for="sozlesmeform" style="width:auto;"><strong>Mesafeli hizmet sözleşmesi</strong></label>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="row" style="margin-bottom:20px; margin-top:10px;">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-orange" onclick="Payment()">ÖDEMEYİ ONAYLA</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+
+                        <section class="installmentchart table-responsive" style="display:none">
+                            <h3 itemprop="name" style="border-bottom:1px solid #4285F4;color:#4285F4;">Taksitler</h3>
+                            <table width="100%" class="tbl" border="0" cellspacing="0" cellpadding="0">
+                                <thead>
+                                    <tr>
+                                        <td scope="col" class="inno">&nbsp;</td>
+                                        @{
+                                            foreach (var item in sbank.result.Where(P => P.salesBankInstallmentList.Sum(X => X.amount) > 0))
+                                            {
+                                                <td scope="col">
+                                                    <b>@item.bank</b>
+                                                </td>
+                                            }
+                                        }
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var sbanks = sbank.result.Where(P => P.salesBankInstallmentList.Sum(X => X.amount) > 0).ToList();
+                                        for (int i = 0; i < 9; i++)
+                                        {
+                                            <tr>
+                                                <td>@(i + 1).Taksit</td>
+
+                                                @{ for (int x = 0; x < sbanks.Count; x++)
+                                                    {
+                                                        if (sbanks[x].salesBankInstallmentList.Count > i)
+                                                        {
+                                                            <td onclick="@(sbanks[x].salesBankInstallmentList[i].amount == 0 ? Html.Raw(""): Html.Raw("$('#BankID').val('"+@sbanks[x].creditCardID+"');$('#Amount').html('"+@sbanks[x].salesBankInstallmentList[i].amount+"TL');installmentID="+@sbanks[x].salesBankInstallmentList[i].id+"; $('#BankID').change();"))">@(sbanks[x].salesBankInstallmentList[i].amount == 0 ? "-" : string.Format("{0:c}", sbanks[x].salesBankInstallmentList[i].amount))</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td></td>
+                                                        }
+                                                    }
+
+                                                }
+
+
+                                            </tr>
+                                        }
+
+                                    }
+
+                                </tbody>
+                            </table>
+                        </section>
+
+
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <div class="row">
+
+                    <div class="col-lg-12">
+                        <div class="row" style="border:1px solid #d1d1d1;margin:-6px;padding-top:10px;padding-bottom:10px;border-radius:6px;margin-bottom:15px;background-color:#fff;">
+                            <div class="col-md-12">
+                                <h4 itemprop="name">Sipariş Özeti</h4>
+                            </div>
+                            <div class="col-md-12">
+                                <table style="width:100%; text-align:left; font-size:11px; color:#000;">
+                                    @{
+                                        foreach (var item in sales.result.passengerTicket)
+                                        {
+                                            <tr>
+                                                <td colspan="2"><b>@item.ferryName - @item.departureRegionName > @item.arrivalRegionName - @item.serviceDate.ToShortDateString()</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>@item.name @item.surName</td>
+                                                <td style="text-align:right;">@item.totalSalesAmount@item.currencyTypeSymbol</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style="border-bottom:1px dotted #808080; padding-bottom:6px;"></td>
+                                            </tr>
+                                        }
+
+
+                                    }
+
+                                    @{
+                                        foreach (var item in sales.result.vehicleTicket)
+                                        {
+                                            <tr>
+                                                <td colspan="2"><b>@item.plate  @item.ferryName - @item.departureRegionName > @item.arrivalRegionName - @item.serviceDate.ToShortDateString()</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>@item.name @item.surName</td>
+                                                <td style="text-align:right;">@item.totalSalesAmount@item.currencyTypeSymbol</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style="border-bottom:1px dotted #808080; padding-bottom:6px;"></td>
+                                            </tr>
+                                        }
+
+
+                                    }
+
+                                </table>
+                            </div>
+
+                            <div class="col-lg-12">@(  sales.result.passengerTicket.Count() ) Ürün</div>
+                            <div class="col-lg-12">Kdv Dahil Toplam Tutar</div>
+                            <div class="col-lg-12" itemprop="price">
+                                @{
+                                    if (sales.result.salesCurrency != null)
+                                    {
+                                        foreach (var item in sales.result.salesCurrency.Where(p=>p.typeID==1 || p.typeID==2))
+                                        {
+                                        <h4 style="margin:0px">@item.amount @item.symbol</h4>
+
+                                            }
+                                        }
+                                    }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+@section scripts {
+    <script src="../assets/js/View/Secure3d.js"></script>
+    <script src="../assets/js/View/GiroGateSecure3d.js"></script>
+    <script src="../assets/js/View/Payment.js"></script>
+}

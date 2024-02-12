@@ -1,0 +1,186 @@
+﻿@{
+
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+
+
+    string LangCode = Configuration.Lang;
+    int LangID = Library.Data.Language.Language.SelectLanguageAll().Where(P => P.Code == LangCode).FirstOrDefault().ID;
+
+    Entities.Parameter.TimeTable.Root Parameter = new Entities.Parameter.TimeTable.Root();
+    Parameter.startDate = DateTime.Today;
+    Parameter.endDate = DateTime.Today.AddMonths(2);
+    Parameter.langCode = LangCode;
+    Parameter.routeZoneID = Convert.ToInt32(ViewBag.ProductGroupCode);
+    WebService.RestApi restApi = new WebService.RestApi();
+    Entities.Response.Ticket.TimeTable.Root timet = restApi.Rest<Entities.Response.Ticket.TimeTable.Root>(Parameter, "api/ticket/timetable", "Post");
+    timet.result = timet.result.Where(p => p.status == 1).ToList();
+
+    IEnumerable<Library.Domain.PageLanguage.PageLanguage>
+pagelang = Library.Data.PageLanguage.PageLanguage.PageLanguages(18, LangID);
+    LangCode = (LangCode == "TR" ? "" : "/") + LangCode;
+}
+<div class="main_contant">
+    <div class="container" style="padding-bottom:40px; padding-top:15px;">
+        <div class="row" style="">
+
+
+            <div class="col-md-2">
+
+
+                <label>@pagelang.Where(P => P.Code == "BASLANGIC_TARIHI").FirstOrDefault().Name</label>
+                <input type="text" class="form-control txtdate" value="@DateTime.Today.ToShortDateString()" id="StartDate" name="StartDate">
+
+
+
+            </div>
+            <div class="col-md-2">
+                <label>@pagelang.Where(P => P.Code == "BITIS_TARIHI").FirstOrDefault().Name</label>
+                <input type="text" class="form-control txtdate" value="@DateTime.Today.AddMonths(1).ToShortDateString()" id="EndDate" name="EndDate">
+
+            </div>
+
+            <div class="col-md-6">
+                <label>@pagelang.Where(P => P.Code == "BOLGE_SECINIZ").FirstOrDefault().Name</label>
+                <select name="RouteZoneID" id="RouteZoneID" class="form-control">
+                    @{
+                        Entities.Parameter.routeZone.Root rootzone_param = new Entities.Parameter.routeZone.Root();
+                        rootzone_param.langCode = LangCode;
+                        Entities.Response.Ticket.routeZone.Root routes = restApi.Rest<Entities.Response.Ticket.routeZone.Root>(rootzone_param, "api/ticket/routezone","Post");
+
+                        foreach (var item in routes.result)
+                        {
+                            <option @(ViewBag.ProductGroupCode == item.id.ToString() ? "selected" : "") dp="@item.departureRegionID" value="@item.id">@item.departureRegionName - @item.arrivalRegionName</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <br />
+                <button type="button" onclick="SelectAllTimeTable()" class="btn btn-orange"><i class="fa fa-search" aria-hidden="true"></i> @pagelang.Where(P => P.Code == "LISTELE").FirstOrDefault().Name</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div style="border-bottom:1px solid #808080; width:100%; margin-bottom:10px;"></div>
+<div class="container" style="padding-bottom:40px;">
+    <div class="row ferrytimesearch_results ">
+        <div class="col-lg-12" style="">
+            <table id="timetable" width="100%" border="0" cellspacing="0" cellpadding="0">
+                <thead>
+
+                    <tr>
+                        <td></td>
+                        <td colspan="3" id="departure">@routes.result.Where(P => P.id == Convert.ToInt32(ViewBag.ProductGroupCode)).FirstOrDefault().departureRegionName > @routes.result.Where(P => P.id == Convert.ToInt32(ViewBag.ProductGroupCode)).FirstOrDefault().arrivalRegionName</td>
+                        <td colspan="3" class="borderleft" id="arrival">@routes.result.Where(P => P.id == Convert.ToInt32(ViewBag.ProductGroupCode)).FirstOrDefault().arrivalRegionName > @routes.result.Where(P => P.id == Convert.ToInt32(ViewBag.ProductGroupCode)).FirstOrDefault().departureRegionName</td>
+                    </tr>
+                    <tr>
+                        <th>@pagelang.Where(P => P.Code == "TARIH").FirstOrDefault().Name</th>
+                        <th>@pagelang.Where(P => P.Code == "GIDIS_FERIBOT").FirstOrDefault().Name</th>
+                        <th>@pagelang.Where(P => P.Code == "SAAT").FirstOrDefault().Name</th>
+                        <th></th>
+                        <th>@pagelang.Where(P => P.Code == "GELIS_FERIBOT").FirstOrDefault().Name</th>
+                        <th>@pagelang.Where(P => P.Code == "SAAT").FirstOrDefault().Name</th>
+                        <th></th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @{
+                        string departurename = null;
+                        string arrivalname = null;
+                        for (int i = 0; i < timet.result.Where(p=>p.status== 1 & p.passengerRemainingQuota>0).Count(); i++)
+                        {
+                            if (timet.result[i].departureRegionID == routes.result.Where(P => P.id == Convert.ToInt32(ViewBag.ProductGroupCode)).FirstOrDefault().departureRegionID)
+                            {
+                                if (i > 1)
+                                {
+                                    if (timet.result[i].serviceDate != timet.result[i - 1].serviceDate)
+                                    {
+                                        <tr><td class="ferrydate" colspan="7">@timet.result[i].serviceDate.ToString("dd.MM.yyyy") - @timet.result[i].dayName</td></tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td class='ferrydate' colspan='7'>@timet.result[i].serviceDate.ToString("dd.MM.yyyy")   - @timet.result[i].dayName</td></tr>
+                                }
+
+                                <tr><td></td><td>@timet.result[i].departureRegionName  |  @timet.result[i].ferryName</td><td>@string.Format("{0:hh\\:mm}", timet.result[i].departureTime)</td><td>@(timet.result[i].vehicleRemainingQuota == 0 ? "No Car" : ".")</td><td class='borderleft' colspan='3'></td></tr>
+
+                                if (departurename == null)
+                                {
+                                    departurename = timet.result[i].departureRegionName.Split('-')[0];
+                                }
+
+
+                            }
+                            else
+                            {
+
+                                if (i > 1)
+                                {
+                                    if (timet.result[i].serviceDate != timet.result[i - 1].serviceDate)
+                                    {
+
+                                        <tr><td class='ferrydate' colspan='7'>@timet.result[i].serviceDate.ToString("dd.MM.yyyy") - @timet.result[i].dayName</td></tr>
+                                    }
+                                }
+
+                                <tr><td colspan='4'></td><td class='borderleft'>@timet.result[i].departureRegionName  | @timet.result[i].ferryName</td><td>@string.Format("{0:hh\\:mm}", timet.result[i].departureTime)</td><td>@(timet.result[i].vehicleRemainingQuota == 0 ? "No Car" : ".")</td></tr>
+
+
+
+                                if (arrivalname == null)
+                                {
+                                    arrivalname = timet.result[i].departureRegionName.Split('-')[0];
+                                }
+                            }
+
+
+                        }
+
+                    }
+
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+</div>
+<div class="container">
+    @(Html.Raw(ViewBag.Content))
+</div>
+
+<style>
+    #timetable td {
+        padding: 4px;
+        font-size: 12px;
+    }
+
+    #timetable thead tr:last-child td {
+        border-bottom: 1px solid #808080;
+    }
+
+    #timetable thead tr:last-child {
+        color: #000;
+        font-weight: bold;
+    }
+
+    #timetable thead tr:first-child {
+        color: #b00101;
+        font-weight: 600;
+    }
+
+    .ferrydate {
+        background-color: #ebebeb;
+    }
+
+    #timetable tbody tr td {
+        border-bottom: 1px solid #ebebeb;
+    }
+</style>
+@section scripts {
+    <script src="~/assets/js/View/TimeTable.js"></script>
+
+    }

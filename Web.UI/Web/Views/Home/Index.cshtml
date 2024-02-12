@@ -1,0 +1,236 @@
+﻿@{
+    string LangCode = Library.Configuration.Lang;
+    WebService.RestApi restApi = new WebService.RestApi();
+    Entities.Response.Ticket.Region_Response departures = restApi.Rest<Entities.Response.Ticket.Region_Response>(new { }, "api/ticket/departureregion", "Post");
+    Entities.Response.Ticket.Region_Response arrivals = restApi.Rest<Entities.Response.Ticket.Region_Response>(new { regionID = departures.result.First().regionID }, "api/ticket/arrivalregion", "Post");
+    Entities.Response.Ticket.FerryVehicleType api_vehicle_type = restApi.Rest<Entities.Response.Ticket.FerryVehicleType>(new { langCode = LangCode }, "api/ticket/vehicletypes", "Post");
+    var extraservice = new WebService.RestApi().Rest<Entities.Response.ExtraService.Search.Root>(new { birthDate = new List<DateTime>(), pageIndex = 1, regions = new List<Entities.Parameter.ExtraServices.Search.Region>(), citys = new List<Entities.Parameter.ExtraServices.Search.City>(), pageSize = 9999, serviceStartDate = DateTime.Today, langCode = LangCode, productGroupCode = Library.Configuration.EXTRA_SERVICE_HOME }, "api/extraservice/search", "Post");
+}
+<!--========================= FLEX SLIDER =====================-->
+<section class="flexslider-container" id="flexslider-container-2">
+    <div class="flexslider slider" id="slider-2">
+        <ul class="slides">
+            <li class="item-1 back-size" style="background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0)),url(../assets/images/banner.jpg) 50% 15%;
+	background-size:cover;
+	height:100%;">
+                <div class="meta">
+                    <div class="container">
+                        <h2>feribot Bileti</h2>
+                        <p>En Uygun Fiyatlar</p>
+                    </div><!-- end container -->
+                </div><!-- end meta -->
+            </li>
+        </ul>
+    </div><!-- end slider -->
+
+    <div class="search-tabs" id="search-tabs-2">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#ship" data-toggle="tab"><span><i class="fa fa-ship"></i></span><span class="st-text">Feribot Bileti</span></a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="ship" class="tab-pane in active">
+                            <form method="post" action="../FerrySearch">
+                                <div class="row">
+                                    <div class="col-md-12 booking-trips">
+                                        <div class="form-group booking-listing">
+                                            <div class="dash-listing-heading">
+                                                <div class="custom-radio">
+                                                    <input type="radio" name="RouteType" id="OneWay" value="1" />
+                                                    <label for="OneWay"><span></span>Tek Yön</label>
+                                                </div>
+                                                <div class="custom-radio">
+                                                    <input type="radio" name="RouteType" id="RoudTrip" value="2" checked />
+                                                    <label for="RoudTrip"><span></span>Gidiş Dönüş</label>
+                                                </div>
+                                                <div class="custom-radio">
+                                                    <input type="radio" name="RouteType" id="Open" value="3" />
+                                                    <label for="Open"><span></span>Tek Yön</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
+                                        <div class="row">
+
+                                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                                <label>Nereden</label>
+                                                <div class="form-group right-icon">
+                                                    <select class="form-control" name="DepartureRegionID" id="DepartureRegionID">
+                                                        @{
+                                                            foreach (var item in departures.result)
+                                                            {
+                                                                <option value="@item.regionID">@item.name</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    <i class="fa fa-angle-down"></i>
+                                                </div>
+                                            </div><!-- end columns -->
+                                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                                <label>Nereye</label>
+                                                <div class="form-group right-icon">
+                                                    <select class="form-control" name="ArrivalRegionID" id="ArrivalRegionID">
+                                                        @{
+                                                            foreach (var item in arrivals.result)
+                                                            {
+                                                                <option value="@item.regionID">@item.name</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    <i class="fa fa-angle-down"></i>
+                                                </div>
+                                            </div><!-- end columns -->
+
+                                        </div><!-- end row -->
+                                    </div><!-- end columns -->
+
+                                    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-3">
+
+                                        <div class="row">
+
+                                            <div class="col-xs-6 col-sm-6 col-md-6">
+                                                <label>Gidiş Tarihi</label>
+                                                <div class="form-group left-icon">
+                                                    <input type="text" class="form-control txtdate" name="DepartureDate" id="DepartureDate" value="@(DateTime.Today.AddDays(1).ToString("dd.MM.yyyy"))" placeholder="__.__.____">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                            </div><!-- end columns -->
+
+                                            <div class="col-xs-6 col-sm-6 col-md-6">
+                                                <label>Dönüş Tarihi</label>
+                                                <div class="form-group left-icon">
+                                                    <input type="text" class="form-control txtdate" name="ReturnDate" id="ReturnDate" value="@(DateTime.Today.AddDays(2).ToString("dd.MM.yyyy"))" placeholder="__.__.____">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                            </div><!-- end columns -->
+
+                                        </div><!-- end row -->
+                                    </div><!-- end columns -->
+
+                                    <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1">
+                                        <label>Yetişkin</label>
+                                        <div class="form-group right-icon">
+                                            <select class="form-control" name="AdultQuantity" id="AdultQuantity">
+                                                <option selected value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                            </select>
+                                            <i class="fa fa-angle-down"></i>
+                                        </div>
+                                    </div><!-- end columns -->
+                                    <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1">
+                                        <label>Çocuck</label>
+                                        <div class="form-group right-icon">
+                                            <select class="form-control" name="ChildQuantity" id="ChildQuantity">
+                                                <option value="0">0</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+
+                                            </select>
+                                            <i class="fa fa-angle-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1" style="">
+                                        <label>Araç</label>
+                                        <div class="form-group right-icon">
+                                            <select class="form-control" name="VehicleQuantity" id="VehicleQuantity">
+                                                <option selected value="0">0</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                            </select>
+                                            <i class="fa fa-angle-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 vehicles" style="display:none">
+                                        <div class="row ">
+                                            <div class="col-md-3 vehicle1" style="display:none;">
+                                                <label>1.Araç</label>
+                                                <div class="form-group right-icon">
+
+                                                    <select class="form-control" id="vehicle1" name="vehicle1">
+                                                        <option value="0">-</option>
+                                                        @{
+                                                            foreach (var item in api_vehicle_type.result)
+                                                            {
+                                                                <option value="@item.id">@item.name</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    <i class="fa fa-angle-down"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 vehicle2" style="display:none;">
+                                                <label>2. Araç</label>
+                                                <div class="form-group right-icon">
+
+                                                    <select class="form-control" id="vehicle2" name="vehicle2">
+                                                        <option value="0">-</option>
+                                                        @{
+
+                                                            foreach (var item in api_vehicle_type.result)
+                                                            {
+                                                                <option value="@item.id">@item.name</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    <i class="fa fa-angle-down"></i>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 childs" style="display:none">
+                                        <div class="row ">
+                                            <div class="col-md-3 childage1" style="display:none;">
+                                                <label>1. Cocuk Doğum Tarihi</label>
+                                                <div class="form-group left-icon">
+                                                    <input type="text" class="form-control txtdate child_age" id="childage1" name="childage1" value="" placeholder="" /><i class="fa fa-calendar"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 childage2" style="display:none;">
+                                                <label>2. Cocuk Doğum Tarihi</label>
+                                                <div class="form-group left-icon"><input type="text" class="form-control txtdate child_age" id="childage2" name="childage2" value="" placeholder="" /><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                            <div class="col-md-3 childage3" style="display:none;">
+                                                <label>3. Cocuk Doğum Tarihi</label>
+                                                <div class="form-group left-icon"><input type="text" class="form-control txtdate child_age" id="childage3" name="childage3" value="" placeholder="" /><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-1 search-btn">
+                                        <label style="display:block">.</label>
+                                        <button class="btn btn-orange">ONLİNE BİLET AL</button>
+                                    </div><!-- end columns -->
+
+                                </div><!-- end row -->
+                            </form>
+                        </div><!-- end flights -->
+                    </div><!-- end tab-content -->
+
+                </div><!-- end columns -->
+            </div><!-- end row -->
+        </div><!-- end container -->
+    </div><!-- end search-tabs -->
+
+</section><!-- end flexslider-container -->
+ 
+
+<div class="container">
+    
+</div>
+
+ 
+@section scripts {
+    <script src="~/assets/js/View/Home.js"></script>
+    <script>
+                                 //   $("#basicModal").modal("show");
+    </script>
+}
