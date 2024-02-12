@@ -1,7 +1,7 @@
 ﻿ 
 @{
 
-    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 
     
 
@@ -464,7 +464,7 @@
                             vs[i] = ExpeditionInform.result.Where(P => P != null).ToList()[i].ferryID;
                         }
 
-                        Entities.Response.Ticket.FerryContent contents = restApi.Rest<Entities.Response.Ticket.FerryContent>(new { langCode = LangCode, ferryID = vs }, "api/ticket/ferrycontent", "Get");
+                        Entities.Response.Ticket.FerryContent contents = restApi.Rest<Entities.Response.Ticket.FerryContent>(new { langCode = LangCode, ferryID = vs }, "api/ticket/ferrycontent", "Post");
                         if (contents.result != null)
                         {
                             foreach (var item in contents.result)

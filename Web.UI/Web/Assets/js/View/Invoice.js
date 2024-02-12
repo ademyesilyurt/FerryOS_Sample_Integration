@@ -31,7 +31,7 @@
 
 function successInvoice(b) {
     if (b.valid === null) {
-        location.href = "https://" + location.hostname + "/" + payment + "?Voucher=" + getParameterByName("Voucher");
+        location.href = "../payment?Voucher=" + getParameterByName("Voucher");
     } else {
         UIAlert(b.valid);
     }
