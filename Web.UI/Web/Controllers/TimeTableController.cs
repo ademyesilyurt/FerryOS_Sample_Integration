@@ -20,11 +20,11 @@ namespace Web.Controllers
         }
 
       //  [OutputCache(Duration = 3600, VaryByParam = "*")]
-        public ActionResult SelectAllTimeTable(BackOffice.Api.Integration.Entities.Parameter.Ferry.TimeTable Parameter)
+        public ActionResult SelectAllTimeTable(Entities.Parameter.TimeTable.Root Parameter)
         {
              
             string LangCode = Configuration.Lang;
-            Parameter.LangCode = LangCode;
+            Parameter.langCode = LangCode;
 
 
 
